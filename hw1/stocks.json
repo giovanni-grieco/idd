@@ -1,0 +1,37 @@
+{
+    "schema" : [
+        "name",
+        "price",
+        "volume",
+        "absolute_change",
+        "percentage_change"
+    ],
+
+    "www.google.com/finance/quote" : {
+        "xpaths": [
+            "//*",
+            "//*",
+            "//*",
+            "//*",
+            "//*"
+        ],
+        "pages" : [
+            "/DAX:INDEXDB",
+            "/UKX:INDEXFTSE"
+        ]
+    },
+
+    "https://www.cnbc.com/quotes" : {
+        "xpaths" : [
+            "//*",
+            "//*",
+            "//*",
+            "//*",
+            "//*"
+        ],
+        "pages" : [
+            "/.GDAXI",
+            "/.FTSE"
+        ]
+    }
+}
