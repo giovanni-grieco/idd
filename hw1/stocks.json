@@ -9,11 +9,11 @@
 
     "https://www.google.com/finance/quote" : {
         "xpaths": [
-            ["//*"],
-            ["//*"],
-            ["//*"],
-            ["//*"],
-            ["//*"]
+            ["/html/body/c-wiz[2]/div/div[4]/div/main/div[1]/div[1]/div[2]/text()"],
+            ["/html/body/c-wiz[2]/div/div[4]/div/main/div[2]/c-wiz/div/div[1]/div/div[1]/div/div[1]/div/span/div/div/text()"],
+            [""],
+            ["/html/body/c-wiz[2]/div/div[4]/div/main/div[2]/div[1]/div[1]/c-wiz/div/div[1]/div/div[1]/div/div[2]/div/span[1]/div/div/text()"],
+            ["/html/body/c-wiz[2]/div/div[4]/div/main/div[2]/div[1]/div[1]/c-wiz/div/div[1]/div/div[1]/div/div[2]/div/span[2]/text()"]
         ],
         "pages" : [
             "/DAX:INDEXDB",
@@ -23,11 +23,11 @@
 
     "https://www.cnbc.com/quotes" : {
         "xpaths" : [
-            ["//*"],
-            ["//*"],
-            ["//*"],
-            ["//*"],
-            ["//*"]
+            [""],
+            [""],
+            [""],
+            [""],
+            [""]
         ],
         "pages" : [
             "/.GDAXI",

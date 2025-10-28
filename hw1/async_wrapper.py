@@ -32,6 +32,7 @@ async def fetch_page(session, url, xpaths):
             for i, xpath_family in enumerate(xpaths):
                 for xpath in xpath_family:
                     results.extend(selector.xpath(xpath).getall())
+                    print(results)
                 #logger.info(f"XPath results for field {i} on {url}: {results}")
             return {"url": url, "status": response.status, "xpaths": xpaths, "results": results}
 

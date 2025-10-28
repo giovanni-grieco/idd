@@ -1,0 +1,21 @@
+Fare un tool CLI che permetta un interazione base con elastic search.
+
+Sicuramente dobbiamo gestire le query. Le query si fanno sui campi, ma 
+possiamo far scegliere all'utente finale quali campi di preciso oppure no.
+
+Vogliamo fare un sistema "esplorativo" dove si permette all'utente di chiedere quali sono i campi disponibili su cui fare la query?
+
+Inoltre bisogna sviluppare una sintassi di base per intedere query letterali, oppure keyword etc etc
+
+E poi sicuramente sarebbe comodo avere un tool CLI che permetta l'upload e l'indicizzazione di interi gruppi di file...
+Però ci sono tanti file in tanti formati diversi, sicuramente per i limiti attuali del sistema, ci concentriamo su file locali in plain text.
+
+Adottiamo un formato standard, dove i nomi dei file locali avranno degli ID univoci. L'estensione sarà.txt.
+
+Ogni documento sarà plain text con come prima riga il titolo della pagina \n il contenuto della pagina.
+
+Fatto ciò, tutti questi file verranno messi in una singola cartella che verrà scansionata dal tool CLI per effettuare un indicizzazione comune seguendo la stessa interfaccia.
+
+
+
+

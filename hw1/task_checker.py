@@ -51,7 +51,7 @@ def check_task(task: dict) -> bool:
                 
                 # Verifica che ogni xpath sia una stringa non vuota
                 for j, xpath in enumerate(xpath_array):
-                    if not isinstance(xpath, str) or xpath.strip() == "":
+                    if not isinstance(xpath, str):
                         logger.error(f"Domain '{domain}': xpath {j} for field '{schema[i]}' must be a non-empty string")
                         return False
             
