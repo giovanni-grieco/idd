@@ -1,6 +1,6 @@
 TODO:
-- Develop the search functionality for the CLI tool. -> We need to develop a way to elaborate inputs from CLI
-- Develop the indexing functionality for the CLI tool.
+DONE - Develop the search functionality for the CLI tool. -> We need to develop a way to elaborate inputs from CLI
+WIP  - Develop the indexing functionality for the CLI tool.
 - Develop the configuration management for the CLI tool in order to change settings like the type of output or the default endpoint to interact with.
 - Develop an indexing functionality to reference of a folder full of documents and upload them with a certain structure.
 
