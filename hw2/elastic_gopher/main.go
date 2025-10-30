@@ -59,9 +59,7 @@ func test() {
 }
 
 func main() {
-	test()
-
-	//var configuration *config.Config = config.LoadConfig()
+	//test()
 	cmd.Execute()
 
 }

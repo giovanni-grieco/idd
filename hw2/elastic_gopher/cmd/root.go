@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Global Variable declared before the Main execution. Upon package initialization, this variable is set up.
 var rootCmd = &cobra.Command{
 	Use:   "elastic_gopher",
 	Short: "A simple CLI for Elasticsearch operations",
