@@ -1,13 +1,14 @@
-package main
+package es
 
 import (
+	"elastic_gopher/config"
 	"errors"
 	"strings"
 
 	"github.com/elastic/go-elasticsearch/v7"
 )
 
-func deleteIndex(config *Config, indexName string) error {
+func DeleteIndex(config *config.Config, indexName string) error {
 	esCfg := elasticsearch.Config{
 		Addresses: []string{config.ElasticsearchURL},
 	}
@@ -23,7 +24,7 @@ func deleteIndex(config *Config, indexName string) error {
 	return nil
 }
 
-func createIndex(config *Config, indexName string, mappings string) error {
+func CreateIndex(config *config.Config, indexName string, mappings string) error {
 	if indexName == "" || indexName == " " {
 		return errors.New("invalid index")
 	}
@@ -47,7 +48,7 @@ func createIndex(config *Config, indexName string, mappings string) error {
 	return nil
 }
 
-func indexDocument(config *Config, indexName string, document string) error {
+func IndexDocument(config *config.Config, indexName string, document string) error {
 
 	esCfg := elasticsearch.Config{
 		Addresses: []string{config.ElasticsearchURL},
@@ -69,7 +70,7 @@ func indexDocument(config *Config, indexName string, document string) error {
 	return nil
 }
 
-func indexDocumentBulk(config *Config, indexName string, documents []string) error {
+func indexDocumentBulk(config *config.Config, indexName string, documents []string) error {
 	//TODO: implement bulk indexing
 	return nil
 }

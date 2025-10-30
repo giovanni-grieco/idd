@@ -1,6 +1,7 @@
-package main
+package es
 
 import (
+	"elastic_gopher/config"
 	"fmt"
 	"io"
 	"strings"
@@ -8,7 +9,7 @@ import (
 	"github.com/elastic/go-elasticsearch/v7"
 )
 
-func searchDocument(config *Config, indexName string, query string) (string, error) {
+func SearchDocument(config *config.Config, indexName string, query string) (string, error) {
 	esCfg := elasticsearch.Config{
 		Addresses: []string{config.ElasticsearchURL},
 	}
