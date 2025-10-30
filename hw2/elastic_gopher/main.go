@@ -48,14 +48,15 @@ func test() {
 	} else {
 		fmt.Println("Search result: ", queryResult)
 	}
-
-	//let's delete the index
-	err = es.DeleteIndex(configuration, "wiki-index")
-	if err != nil {
-		fmt.Println("Error deleting index: ", err)
-	} else {
-		fmt.Println("Index deleted successfully")
-	}
+	/*
+		//let's delete the index
+		err = es.DeleteIndex(configuration, "wiki-index")
+		if err != nil {
+			fmt.Println("Error deleting index: ", err)
+		} else {
+			fmt.Println("Index deleted successfully")
+		}
+	*/
 }
 
 func main() {

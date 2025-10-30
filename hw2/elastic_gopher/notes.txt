@@ -7,7 +7,7 @@ TODO:
 
 What kind of CLI interactions do I want? Something like this?
 elastic_gopher search "How to implement a binary search tree in Python"
-elastic_gopher search --fields title,content "machine learning algorithms"
+elastic_gopher search --fields title="Title of Document",body="Body content to search"
 
 
 elastic_gopher index create <name_of_index> [mappings]
