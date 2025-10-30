@@ -62,5 +62,4 @@ func test() {
 func main() {
 	//test()
 	cmd.Execute()
-
 }
