@@ -2,6 +2,7 @@ package index
 
 import (
 	"elastic_gopher/cmd/index/create"
+	"elastic_gopher/cmd/index/delete"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -20,5 +21,6 @@ var Cmd = &cobra.Command{
 
 func Bind(rootCmd *cobra.Command) {
 	create.Bind(Cmd)
+	delete.Bind(Cmd)
 	rootCmd.AddCommand(Cmd)
 }
