@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var IndexCmd = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:   "index",
 	Short: "A subcommand regarding indexing",
 	Long:  `A subcommand to perform indexing operations in Elasticsearch.`,
@@ -19,6 +19,6 @@ var IndexCmd = &cobra.Command{
 }
 
 func Bind(rootCmd *cobra.Command) {
-	create.Bind(IndexCmd)
-	rootCmd.AddCommand(IndexCmd)
+	create.Bind(Cmd)
+	rootCmd.AddCommand(Cmd)
 }

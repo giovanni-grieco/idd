@@ -4,13 +4,14 @@ import (
 	"elastic_gopher/config"
 	"elastic_gopher/es"
 	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
 var Mappings string
 var Name string
 
-var createSubCmd = &cobra.Command{
+var SubCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create an index in Elasticsearch",
 	Long:  `Create a new index in Elasticsearch with the specified name and mapping.`,
@@ -31,7 +32,7 @@ var createSubCmd = &cobra.Command{
 }
 
 func Bind(rootCmd *cobra.Command) {
-	createSubCmd.Flags().StringVar(&Name, "name", "", "Name of the index to perform operations on")
-	createSubCmd.Flags().StringVar(&Mappings, "mappings", "", "JSON string representing the index mappings")
-	rootCmd.AddCommand(createSubCmd)
+	SubCmd.Flags().StringVar(&Name, "name", "", "Name of the index to perform operations on")
+	SubCmd.Flags().StringVar(&Mappings, "mappings", "", "JSON string representing the index mappings")
+	rootCmd.AddCommand(SubCmd)
 }

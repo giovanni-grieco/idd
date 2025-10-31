@@ -41,7 +41,7 @@ func ParseFieldsToQuery(fields string) string {
 	}
 }
 
-var SearchCmd = &cobra.Command{
+var Cmd = &cobra.Command{
 	Use:     "search",
 	Short:   "Search in the specified index",
 	Long:    `Search for documents in the specified Elasticsearch index using a provided query.`,
@@ -69,6 +69,6 @@ var SearchCmd = &cobra.Command{
 }
 
 func Bind(rootCmd *cobra.Command) {
-	SearchCmd.Flags().StringVar(&Fields, "fields", "", "Key-value pairs to build a match query (e.g. title=\"Some Title\",body=\"Some Body\")")
-	rootCmd.AddCommand(SearchCmd)
+	Cmd.Flags().StringVar(&Fields, "fields", "", "Key-value pairs to build a match query (e.g. title=\"Some Title\",body=\"Some Body\")")
+	rootCmd.AddCommand(Cmd)
 }
