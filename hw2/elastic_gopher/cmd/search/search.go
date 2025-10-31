@@ -18,7 +18,7 @@ func ParseFieldsToQuery(fields string) string {
 		kvMap := make(map[string]string)
 		pairs := strings.Split(fields, ",")
 		for _, pair := range pairs {
-
+			pair = strings.TrimSpace(pair)
 			kv := strings.SplitN(pair, "=", 2)
 			if len(kv) == 2 {
 				kvMap[strings.TrimSpace(kv[0])] = strings.TrimSpace(kv[1])
@@ -53,8 +53,12 @@ var Cmd = &cobra.Command{
 		if query != "" {
 			fmt.Printf("Built query from SearchFields: %s\n", query)
 		} else {
-			query = args[1]
-			fmt.Printf("Query: %s\n", query)
+			if len(args) == 1 {
+				query = "{}"
+			} else {
+				query = args[1]
+				fmt.Printf("Query: %s\n", query)
+			}
 		}
 
 		var configuration = config.LoadConfig()
