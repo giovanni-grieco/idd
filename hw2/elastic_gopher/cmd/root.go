@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"elastic_gopher/cmd/config"
 	"elastic_gopher/cmd/index"
 	"elastic_gopher/cmd/search"
 	"fmt"
@@ -29,4 +30,5 @@ func Execute() {
 func init() {
 	search.Bind(rootCmd)
 	index.Bind(rootCmd)
+	config.Bind(rootCmd)
 }
