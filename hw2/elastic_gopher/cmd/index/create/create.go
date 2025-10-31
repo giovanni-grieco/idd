@@ -1,12 +1,13 @@
 package create
 
 import (
+	"elastic_gopher/config"
+	"elastic_gopher/es"
 	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
-var Fields string
+var Mappings string
 var Name string
 
 var createSubCmd = &cobra.Command{
@@ -16,12 +17,21 @@ var createSubCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Called create subcommand")
+		fmt.Printf("Index Name: %s\n", Name)
+		fmt.Printf("Mappings: %s\n", Mappings)
+		var configuration = config.LoadConfig()
+		err := es.CreateIndex(configuration, Name, Mappings)
+		if err != nil {
+			fmt.Printf("Error creating index: %s\n", err)
+			return
+		}
+		fmt.Println("Index created successfully")
 		// Here you would add the logic to create the index using the provided name and mapping.
 	},
 }
 
 func Bind(rootCmd *cobra.Command) {
 	createSubCmd.Flags().StringVar(&Name, "name", "", "Name of the index to perform operations on")
-	createSubCmd.Flags().StringVar(&Fields, "fields", "", "Fields to index in key=value format, separated by commas")
+	createSubCmd.Flags().StringVar(&Mappings, "mappings", "", "JSON string representing the index mappings")
 	rootCmd.AddCommand(createSubCmd)
 }
