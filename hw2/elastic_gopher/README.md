@@ -46,12 +46,12 @@ Notes:
 
 Index a single document via `--fields`:
 ```bash
-elastic_gopher index document my-index --fields title='My Title',body='My content'
+elastic_gopher index document my-index --fields title='My Title',content='My content'
 ```
 
 Index all files under a folder (recursively). Each file becomes a document where:
 - `title` = filename without extension
-- `body` = file content
+- `content` = file content
 
 ```bash
 elastic_gopher index document my-index --path /path/to/folder
