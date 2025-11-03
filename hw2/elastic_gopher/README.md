@@ -27,7 +27,6 @@ Top-level commands:
 - `index` — index documents (single document or a folder)
 - `create` — create an index using the provided mapping
 - `delete` — delete an index
-- `list` — list indices
 
 ### SEARCH
 
