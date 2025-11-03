@@ -69,8 +69,8 @@ Create an index using the provided mapping in `index_mappings.json`:
 ```bash
 elastic_gopher index create my-index --mappings "$(cat index_mappings.json)"
 ```
-Where `test_index` is the desired index name and index_mappings.json contains the mapping definition.
-You can also specify raw JSON directly via the `--mappings` flag.
+Where `my-index` is the desired index name and index_mappings.json contains the mapping definition.
+We can specify raw JSON directly via the `--mappings` flag. In this example we have a file .json that gets printed in the correct spot thanks to cat and bash.
 ```bash
 elastic_gopher index create my-index --mappings '{"mappings":{"properties":{"my-field":{"type":"some-type"}}}}}'
 ```
