@@ -1,1 +1,1 @@
-elastic_gopher index create test_index --mappings "$(cat index_mappings.json)"
+elastic_gopher index create test_index --mappings "$(cat example_mappings.json)"

@@ -1,0 +1,1 @@
+elastic_gopher index create wikipedia --mappings "$(cat index_mappings.json)"

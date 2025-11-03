@@ -1,0 +1,1 @@
+elastic_gopher search wikipedia --fields title="Computer"
