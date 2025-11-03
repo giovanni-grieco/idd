@@ -60,8 +60,65 @@ elastic_gopher index create wikipedia --mappings "$(cat index_mappings.json)"
 ```
 Nel file ```index_mappings.json``` sono contenute le specifiche del nostro indice.
 
-Definiamo un ```english_text``` analyzer che utilizza un tokenizzatore standard.
-Si applicano vari filtri come lowercase, asciifolding, english_stop e english_stemmer
+#### Analyzer e filter
+
+Abbiamo la seguente definizione
+```json
+"settings": {
+    "analysis": {
+      "analyzer": {
+        "english_text": {
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "asciifolding",
+            "english_stop",
+            "english_stemmer"
+          ]
+        }
+      },
+      "filter": {
+        "english_stop": {
+          "type": "stop",
+          "stopwords": "_english_"
+        },
+        "english_stemmer": {
+          "type": "stemmer",
+          "name": "english"
+        }
+      }
+    }
+  },
+```
+
+Definiamo un ```english_text``` analyzer che utilizza un tokenizzatore ```standard```.
+Si applicano vari filtri come ```lowercase```, ```asciifolding```, ```english_stop``` e  ```english_stemmer```.
+
+Lowercase e Asciifolding servono a ridurre tutto e minuscole e a trasformare caratteri speciali accentati in caratteri senza accento.
+
+English stop gestisce le stop words inglesi mentre lo stemmer porta le parole alla loro radice.
+
+Successivamente si definiscono i mappings come segue:
+```json
+"mappings": {
+    "properties": {
+      "title": {
+        "type": "text",
+        "analyzer": "english_text",
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
+      },
+      "content": {
+        "type": "text",
+        "analyzer": "english_text"
+      }
+    }
+  }
+```
+Si utilizza l'analyzer definito sopra su entrambi i fields, il titolo però differisce dal contenuto sul fatto che il titolo è di tipo ```keyword```
 
 #### Caricamento file
 Per caricare i file e indicizzarli si utilizza
@@ -109,7 +166,11 @@ Il file ```multi_match_query.json``` effettua la ricerca su titolo e contenuto d
 }
 ```
 
-Le 10 Query di prova sono state eseguite e salvate in file appositi con il loro output relativo.
+Le 10 Query di prova sono state eseguite e salvate in file appositi nella cartella [search_results](https://github.com/giovanni-grieco/idd/tree/main/hw2/search_results) con il loro output relativo.
 
-## Conclusione
+Un esempio di output con query "Artificial Intelligence ethics and regulations" si può trovare [qui](https://github.com/giovanni-grieco/idd/blob/main/hw2/search_results/Artificial_Intelligence_ethics_and_regulations_results.json).
+
+La quantità di pagine indicizzate non è abbastanza per ottenere buoni risultati con ricerche su argomenti arbitrari. A ogni modo, Elasticsearch ci ritorna documenti che sono relativi all'argomento cercato.
+
+## Conclusioni
 Elastic Gopher implementa i requisiti richiesti dall'homework: creazione/cancellazione/lista di indici, definizione mapping, indicizzazione di singoli file o directory e ricerca testuale.
