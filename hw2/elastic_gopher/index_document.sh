@@ -1,0 +1,1 @@
+./elastic_gopher index document test_index --fields title="Hello World Title",content="Hello World Content"
