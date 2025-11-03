@@ -11,10 +11,11 @@ import (
 var Mappings string
 
 var SubCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Create an index in Elasticsearch",
-	Long:  `Create a new index in Elasticsearch with the specified name and mapping.`,
-	Args:  cobra.MinimumNArgs(1),
+	Use:     "create",
+	Short:   "Create an index in Elasticsearch",
+	Long:    `Create a new index in Elasticsearch with the specified name and mapping.`,
+	Example: `elastic_gopher index create my-index --mappings '{"mappings":{"properties":{"my-field":{"type":"some-type"}}}}}'`,
+	Args:    cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Called create subcommand")
 		indexName := args[0]

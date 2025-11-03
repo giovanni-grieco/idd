@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"elastic_gopher/cmd/config"
 	"elastic_gopher/cmd/index"
 	"elastic_gopher/cmd/search"
@@ -16,7 +17,15 @@ var rootCmd = &cobra.Command{
 	Short: "A simple CLI for Elasticsearch operations",
 	Long:  `A simple CLI application to perform basic Elasticsearch operations like creating indices, indexing documents, searching, and deleting indices.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Welcome to Elastic Gopher CLI. Use --help to see available commands.")
+		fmt.Println("Welcome to Elastic Gopher")
+		fmt.Println("You are now in Interactive Mode")
+		fmt.Println("Interactive mode NOT YET IMPLEMENTED")
+		fmt.Println("If you need help in using the tool in Non-Interactive Mode use the -h or --help option.")
+		scanner := bufio.NewScanner(os.Stdin)
+
+		for scanner.Scan() {
+			fmt.Printf("Your input was: %s\n", scanner.Text())
+		}
 	},
 }
 

@@ -4,6 +4,7 @@ import (
 	"elastic_gopher/cmd/index/create"
 	"elastic_gopher/cmd/index/delete"
 	"elastic_gopher/cmd/index/document"
+	"elastic_gopher/cmd/index/list"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -24,5 +25,6 @@ func Bind(rootCmd *cobra.Command) {
 	create.Bind(Cmd)
 	delete.Bind(Cmd)
 	document.Bind(Cmd)
+	list.Bind(Cmd)
 	rootCmd.AddCommand(Cmd)
 }

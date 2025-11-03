@@ -1,8 +1,11 @@
 package es
 
 import (
+	"context"
 	"elastic_gopher/config"
 	"errors"
+	"fmt"
+	"io"
 	"strings"
 
 	"github.com/elastic/go-elasticsearch/v7"
@@ -68,6 +71,34 @@ func IndexDocument(config *config.Config, indexName string, document string) err
 	}
 
 	return nil
+}
+
+func ListIndexes(config *config.Config) (string, error) {
+	esCfg := elasticsearch.Config{
+		Addresses: []string{config.ElasticsearchURL},
+	}
+	client, err := elasticsearch.NewClient(esCfg)
+	if err != nil {
+		return "", err
+	}
+	indices, err := client.Cat.Indices(
+		client.Cat.Indices.WithContext(context.Background()),
+		client.Cat.Indices.WithPretty(),
+		client.Cat.Indices.WithFormat("json"),
+	)
+	if err != nil {
+		return "", err
+	}
+
+	data, err := io.ReadAll(indices.Body)
+
+	err = indices.Body.Close()
+	if err != nil {
+		return "", err
+	}
+
+	result := fmt.Sprintf("%s", data)
+	return result, nil
 }
 
 func indexDocumentBulk(config *config.Config, indexName string, documents []string) error {

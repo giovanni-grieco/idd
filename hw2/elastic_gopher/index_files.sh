@@ -1,0 +1,1 @@
+./elastic_gopher index document test_index --path ./sample_files

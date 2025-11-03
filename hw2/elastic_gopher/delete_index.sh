@@ -1,0 +1,1 @@
+./elastic_gopher index delete test_index
