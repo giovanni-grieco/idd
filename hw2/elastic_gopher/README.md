@@ -14,7 +14,10 @@ go build
 # or install to \$GOBIN
 go install
 ```
-
+or run 
+```bash
+./install.sh
+```
 ## CLI Usage
 
 General form:
