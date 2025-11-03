@@ -1,0 +1,8 @@
+{
+  "query": {
+    "multi_match": {
+      "query": "Computer Science",
+      "fields": ["title^2", "content"]
+    }
+  }
+}
