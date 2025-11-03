@@ -89,12 +89,12 @@ elastic_gopher index ls
 
 1. Create the index (applies mapping):
 ```bash
-./create_index.sh my-index
+elastic_gopher index create my-index --mappings '{JSON...}'
 ```
 
 2. Index sample files:
 ```bash
-./index_path.sh my-index ./sample_files
+elastic_gopher index document my-index --path path/to/directory
 ```
 
 3. Search:
