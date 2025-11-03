@@ -24,9 +24,7 @@ elastic_gopher [command] [subcommand] [flags]
 
 Top-level commands:
 - `search` — perform a search query on an index
-- `index` — index documents (single document or a folder)
-- `create` — create an index using the provided mapping
-- `delete` — delete an index
+- `index` — a root command that allows index creation, deletion, listing of existing indexes, and document indexing
 
 ### SEARCH
 
