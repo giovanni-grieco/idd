@@ -1,1 +1,1 @@
-./elastic_gopher index delete test_index
+elastic_gopher index delete test_index

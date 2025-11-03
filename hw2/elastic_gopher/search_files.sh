@@ -1,1 +1,1 @@
-./elastic_gopher search test_index --fields title="goodbye"
+elastic_gopher search test_index --fields title="goodbye"

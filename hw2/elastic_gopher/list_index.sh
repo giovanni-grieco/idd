@@ -1,1 +1,1 @@
-./elastic_gopher index ls
+elastic_gopher index ls
