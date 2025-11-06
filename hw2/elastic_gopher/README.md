@@ -14,7 +14,10 @@ go build
 # or install to \$GOBIN
 go install
 ```
-
+or run 
+```bash
+./install.sh
+```
 ## CLI Usage
 
 General form:
@@ -24,10 +27,7 @@ elastic_gopher [command] [subcommand] [flags]
 
 Top-level commands:
 - `search` — perform a search query on an index
-- `index` — index documents (single document or a folder)
-- `create` — create an index using the provided mapping
-- `delete` — delete an index
-- `list` — list indices
+- `index` — a root command that allows index creation, deletion, listing of existing indexes, and document indexing
 
 ### SEARCH
 
@@ -49,12 +49,12 @@ Notes:
 
 Index a single document via `--fields`:
 ```bash
-elastic_gopher index document my-index --fields title='My Title',body='My content'
+elastic_gopher index document my-index --fields title='My Title',content='My content'
 ```
 
 Index all files under a folder (recursively). Each file becomes a document where:
 - `title` = filename without extension
-- `body` = file content
+- `content` = file content
 
 ```bash
 elastic_gopher index document my-index --path /path/to/folder
@@ -72,8 +72,8 @@ Create an index using the provided mapping in `index_mappings.json`:
 ```bash
 elastic_gopher index create my-index --mappings "$(cat index_mappings.json)"
 ```
-Where `test_index` is the desired index name and index_mappings.json contains the mapping definition.
-You can also specify raw JSON directly via the `--mappings` flag.
+Where `my-index` is the desired index name and index_mappings.json contains the mapping definition.
+We can specify raw JSON directly via the `--mappings` flag. In this example we have a file .json that gets printed in the correct spot thanks to cat and bash.
 ```bash
 elastic_gopher index create my-index --mappings '{"mappings":{"properties":{"my-field":{"type":"some-type"}}}}}'
 ```
@@ -92,12 +92,12 @@ elastic_gopher index ls
 
 1. Create the index (applies mapping):
 ```bash
-./create_index.sh my-index
+elastic_gopher index create my-index --mappings '{JSON...}'
 ```
 
 2. Index sample files:
 ```bash
-./index_path.sh my-index ./sample_files
+elastic_gopher index document my-index --path path/to/directory
 ```
 
 3. Search:
