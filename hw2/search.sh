@@ -1,0 +1,1 @@
+elastic_gopher search wikipedia "$(cat multi_match_query.json)"

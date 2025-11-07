@@ -1,0 +1,1 @@
+elastic_gopher index document wikipedia --path ./documents
