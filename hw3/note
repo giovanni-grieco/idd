@@ -1,0 +1,51 @@
+l'MRR è una delle due unità di misura utilizzate per calcolare la bontà del sistema.
+
+Data una Tabella Sorgente S, e una Tabella Target T,
+Siano Ai appartenenti a S le colonne di S, e Bj le colonne di T.
+
+Ogni matcher M produce mapping SxT con relativo punteggio di matching.
+Cioè il Matcher M1, prende la colonna A1 e ne calcola il punteggio di matching con B1,
+Poi confronta A1 con B2 etc.
+
+Quando ha finito, la lista SxT viene ordinata sulla base dei punteggi forniti.
+Questa è quindi una lista di liste dove per ogni Ai esiste un punteggio relativo al matching
+con Bj appartente a T.
+
+Quindi questa lista di liste SxT viene chiamata matches e matches[A] sarebbe la lista di mapping relativi ad una colonna A di S con tutte le colonne B di T.
+matches[A] è ordinata sulla base del punteggio offerto dal Matcher M.
+
+Quindi scorrendo la lista ordinata matches[A] all'inizio troviamo ciò che il matcher ha reputato come best match, in seconda posizione troviamo il second best etc etc.
+
+Si definisce rA come la posizione all'interno di matches[A] del primo match corretto.
+
+Se il matcher ha messo un match corretto in prima posizione, allora rA = 1, se invece il matcher ha messo il match corretto in quinta posizione, allora rA = 5.
+
+Quindi quando nel paper si parla di MRR sarebbe la media dell'inverso del rank, cioè si calcola
+MRR = 1/|S'| Sum A in S' (1/rA)
+
+(S' è un subset di S, sono solo le colonne che contengono effettivamente un match. Il matcher potrebbe dover confrontare colonne A appartenenti ad S che non hanno nessun match on B appartenenti a T)
+
+Cioè si fa la somma mediata di tutti gli inversi di rA.
+Il matcher ha rankato correttamente, allora rA = 1 e quindi anche 1/rA = 1.
+
+Quindi il matcher viene valutato iterando su tutte le colonne che hanno effettivamente un match e facendo la somma mediata dell'inverso di rA.
+
+E quindi MRR è la misura di bontà di un matcher, cioè la sua capacità di beccare e rankare il più in alto possibile le colonne che stanno effettivamente in match.
+
+-- Recall@GT
+E' una misura che ci fa capire quanto il sistema è stato capace di mettere globalmente per primi i risultati effettivamente corretti nel ranking. Qui l'analisi del punteggio non avviene colonna per colonna, ma globalmente su S e T.
+
+Sembra usare un formalismo leggermente sbagliato.
+
+
+
+
+------------
+
+Usano più approcci, sviluppano training data a partire da LLM per degli SLM (small language model come BERT o RoBERTa e MPNet) per effettuare fine-tunening.
+
+Questi SLM possono essere usati come matcher semantici di intere colonne.
+
+A questo punto si possono usare re-ranker basati su LLM oppure su algoritmi per grafi bipartiti. L'algoritmo di assegnazione basato su grafi bipartiti è usato quando l'inferenza su LLM non è disponibile a runtime oppure è critico che l'esecuzione sia veloce.
+
+Utilizzano un algoritmo efficiente che dovrebbe essere polinomiale
