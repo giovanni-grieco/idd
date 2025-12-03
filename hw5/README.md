@@ -2,7 +2,7 @@
 Estrazione ed indicizzazione di paper provenienti da Arxiv e PubMed
 
 ## Argomenti
-- Arxiv: "text-to-sql" oppure "Natural language to sql"
+- Arxiv: "text-to-sql" or "Natural language to sql"
 - PubMed: "glyphosate AND cancer risk"
 
 ## Step
