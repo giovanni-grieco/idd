@@ -2,10 +2,17 @@ import requests
 from lxml import etree as ET
 import json
 import os
+import time
+import logging
+
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 source_folder_name = "arxiv"
 
 time_to_next_request = 3  # seconds
+time_of_last_request = 0
 
 def save_metadata_as_json(metadata: dict, filename: str) -> bool:
     with open(filename, 'w') as f:
@@ -19,7 +26,8 @@ def download_paper(url: str, filename: str) -> bool:
             f.write(response.content)
         return True
     else:
-        print(f"Failed to download paper from {url}. Status code: {response.status_code}")
+        #print(f"Failed to download paper from {url}. Status code: {response.status_code}")
+        logger.warning(f"Failed to download paper from {url}. Status code: {response.status_code}. Skipping...")
         return False
 
 
@@ -31,12 +39,12 @@ def fetch_arxiv(query: str, max_results: int = 10, start: int = 0):
     url=f'http://export.arxiv.org/api/query?search_query={search_query}&start={start}&max_results={max_results}'
 
     response = requests.get(url)
-    print(response.status_code)
+    logger.info(f"Response status code: {response.status_code}")
 
     if response.status_code == 200:
         root = ET.fromstring(response.content)
         ns = {'atom': 'http://www.w3.org/2005/Atom'}
-
+        logger.info(f"Parsing {len(root.findall('atom:entry', ns))} entries from arXiv API response.")
         for entry in root.findall('atom:entry', ns):
             title = (entry.find('atom:title', ns).text or '').strip()
             summary = (entry.find('atom:summary', ns).text or '').strip()
@@ -46,23 +54,31 @@ def fetch_arxiv(query: str, max_results: int = 10, start: int = 0):
             link: str = next((l.get('href') for l in entry.findall('atom:link', ns) if l.get('rel') == 'alternate'), None)
             
 
-            print("Title:", title)
-            print("Authors:", ", ".join(authors))
-            print("Published:", published)
-            print("Link:", link or arxiv_id)
-            print("Summary:", summary[:300].replace("\n", " ") + "...")
+            #print("Title:", title)
+            #print("Authors:", ", ".join(authors))
+            #print("Published:", published)
+            #print("Link:", link or arxiv_id)
+            #print("Summary:", summary[:300].replace("\n", " ") + "...")
             # Check for HTML version link
             html_link = link.replace('abs', 'html') if link else None
             filename_base = arxiv_id.split('/')[-1]
+            start_time = time.time()
             response_status = download_paper(html_link, f"{filename_base}.html") if html_link else None
             if response_status:
-                print("HTML version available at:", html_link)
+                #print("HTML version available at:", html_link)
                 # If it's available, we will format the metadata into a JSON and download the paper itself as a file.
                 # The metadata is gonna be a json structure file
                 metadata = {"title": title,"authors": authors,"published": published, "summary": summary,"link": link or arxiv_id}
                 save_metadata_as_json(metadata, f"{filename_base}.json")
+                logger.info(f"Downloaded and saved paper {filename_base}")
+                elapsed_time = time.time() - start_time
+                if elapsed_time < time_to_next_request:
+                    logger.info(f"Waiting for {time_to_next_request - elapsed_time:.2f} seconds to respect rate limiting...")
+                    # We wait only when we successfully downloaded a paper in HTML. if we receive a 404 we don't wait.
+                    time.sleep(time_to_next_request - elapsed_time)
+
     else:
-        print("Error fetching data from arXiv API:", response.status_code)
+        logger.error(f"Error fetching data from arXiv API: {response.status_code}")
 
 def fetch(query: str, total_amount: int, max_results: int = 10, start: int = 0):
 
@@ -75,6 +91,11 @@ def fetch(query: str, total_amount: int, max_results: int = 10, start: int = 0):
         max_results = total_amount
 
     while start < total_amount:
+        start_time = time.time()
         fetch_arxiv(query, start, max_results)
-        print(f"Fetched {min(start + max_results, total_amount)} of {total_amount} results.\n")
+        logger.info(f"Fetched {min(start + max_results, total_amount)} of {total_amount} results.\n")
         start += max_results
+        elapsed_time = time.time() - start_time
+        if elapsed_time < time_to_next_request:
+            logger.info(f"Waiting for {time_to_next_request - elapsed_time:.2f} seconds to respect rate limiting...")
+            time.sleep(time_to_next_request - elapsed_time)
