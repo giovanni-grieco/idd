@@ -1,0 +1,242 @@
+2025-12-03 12:46:25,648 - INFO - Fetching arXiv API URL: http://export.arxiv.org/api/query?search_query=all:text-to-sql&start=0&max_results=10
+2025-12-03 12:46:26,450 - INFO - Response status code: 200
+2025-12-03 12:46:26,450 - INFO - Parsing 10 entries from arXiv API response.
+2025-12-03 12:46:26,451 - INFO - Paper 2208.10099v1 is in cache. Skipping download.
+2025-12-03 12:46:26,451 - INFO - Paper 2308.15363v4 is in cache. Skipping download.
+2025-12-03 12:46:26,451 - INFO - Paper 2505.13725v1 already exists. Skipping download.
+2025-12-03 12:46:26,451 - INFO - Paper 2505.13725v1 is in cache. Skipping download.
+2025-12-03 12:46:26,451 - INFO - Paper 2505.18929v1 already exists. Skipping download.
+2025-12-03 12:46:26,451 - INFO - Paper 2505.18929v1 is in cache. Skipping download.
+2025-12-03 12:46:26,451 - INFO - Paper 2509.00581v2 already exists. Skipping download.
+2025-12-03 12:46:26,451 - INFO - Paper 2509.00581v2 is in cache. Skipping download.
+2025-12-03 12:46:26,452 - INFO - Paper 2501.11498v1 already exists. Skipping download.
+2025-12-03 12:46:26,452 - INFO - Paper 2501.11498v1 is in cache. Skipping download.
+2025-12-03 12:46:26,452 - INFO - Paper 1911.04942v5 is in cache. Skipping download.
+2025-12-03 12:46:26,452 - INFO - Paper 2012.10074v1 is in cache. Skipping download.
+2025-12-03 12:46:26,452 - INFO - Paper 2502.13550v1 already exists. Skipping download.
+2025-12-03 12:46:26,452 - INFO - Paper 2502.13550v1 is in cache. Skipping download.
+2025-12-03 12:46:26,452 - INFO - Paper 2411.00788v1 already exists. Skipping download.
+2025-12-03 12:46:26,452 - INFO - Paper 2411.00788v1 is in cache. Skipping download.
+2025-12-03 12:46:26,452 - INFO - Finished processing current batch from arXiv API.
+2025-12-03 12:46:26,452 - INFO - Waiting for 3 seconds to respect rate limiting...
+2025-12-03 12:46:29,454 - INFO - Fetched 10 of 1000 results.
+2025-12-03 12:46:29,455 - INFO - Fetching arXiv API URL: http://export.arxiv.org/api/query?search_query=all:text-to-sql&start=10&max_results=10
+2025-12-03 12:46:29,752 - INFO - Response status code: 200
+2025-12-03 12:46:29,752 - INFO - Parsing 10 entries from arXiv API response.
+2025-12-03 12:46:29,752 - INFO - Paper 2312.06172v2 is in cache. Skipping download.
+2025-12-03 12:46:29,752 - INFO - Paper 2502.15686v1 is in cache. Skipping download.
+2025-12-03 12:46:29,752 - INFO - Paper 2402.15012v1 already exists. Skipping download.
+2025-12-03 12:46:29,753 - INFO - Paper 2402.15012v1 is in cache. Skipping download.
+2025-12-03 12:46:29,753 - INFO - Paper 2410.06011v1 already exists. Skipping download.
+2025-12-03 12:46:29,753 - INFO - Paper 2410.06011v1 is in cache. Skipping download.
+2025-12-03 12:46:29,753 - INFO - Paper 2305.13683v2 already exists. Skipping download.
+2025-12-03 12:46:29,753 - INFO - Paper 2305.13683v2 is in cache. Skipping download.
+2025-12-03 12:46:29,753 - INFO - Paper 2301.04790v2 is in cache. Skipping download.
+2025-12-03 12:46:29,753 - INFO - Paper 2509.05899v1 already exists. Skipping download.
+2025-12-03 12:46:29,753 - INFO - Paper 2509.05899v1 is in cache. Skipping download.
+2025-12-03 12:46:29,753 - INFO - Paper 2406.10593v2 is in cache. Skipping download.
+2025-12-03 12:46:29,753 - INFO - Paper 2304.11556v1 is in cache. Skipping download.
+2025-12-03 12:46:29,753 - INFO - Paper 2510.17586v2 already exists. Skipping download.
+2025-12-03 12:46:29,753 - INFO - Paper 2510.17586v2 is in cache. Skipping download.
+2025-12-03 12:46:29,754 - INFO - Finished processing current batch from arXiv API.
+2025-12-03 12:46:29,754 - INFO - Waiting for 3 seconds to respect rate limiting...
+2025-12-03 12:46:32,755 - INFO - Fetched 20 of 1000 results.
+2025-12-03 12:46:32,755 - INFO - Fetching arXiv API URL: http://export.arxiv.org/api/query?search_query=all:text-to-sql&start=20&max_results=10
+2025-12-03 12:46:33,084 - INFO - Response status code: 200
+2025-12-03 12:46:33,085 - INFO - Parsing 10 entries from arXiv API response.
+2025-12-03 12:46:33,085 - INFO - Paper 2502.11438v3 already exists. Skipping download.
+2025-12-03 12:46:33,085 - INFO - Paper 2502.11438v3 is in cache. Skipping download.
+2025-12-03 12:46:33,085 - INFO - Paper 2408.04691v4 already exists. Skipping download.
+2025-12-03 12:46:33,085 - INFO - Paper 2408.04691v4 is in cache. Skipping download.
+2025-12-03 12:46:33,085 - INFO - Paper 2310.13575v1 is in cache. Skipping download.
+2025-12-03 12:46:33,086 - INFO - Paper 2002.00557v2 is in cache. Skipping download.
+2025-12-03 12:46:33,086 - INFO - Paper 2510.26840v1 already exists. Skipping download.
+2025-12-03 12:46:33,086 - INFO - Paper 2510.26840v1 is in cache. Skipping download.
+2025-12-03 12:46:33,086 - INFO - Paper 2408.04919v2 already exists. Skipping download.
+2025-12-03 12:46:33,086 - INFO - Paper 2408.04919v2 is in cache. Skipping download.
+2025-12-03 12:46:33,086 - INFO - Paper 2203.07376v2 is in cache. Skipping download.
+2025-12-03 12:46:33,086 - INFO - Paper 2507.04701v1 already exists. Skipping download.
+2025-12-03 12:46:33,086 - INFO - Paper 2507.04701v1 is in cache. Skipping download.
+2025-12-03 12:46:33,087 - INFO - Paper 2408.05109v5 already exists. Skipping download.
+2025-12-03 12:46:33,087 - INFO - Paper 2408.05109v5 is in cache. Skipping download.
+2025-12-03 12:46:33,087 - INFO - Paper 2409.02038v2 already exists. Skipping download.
+2025-12-03 12:46:33,087 - INFO - Paper 2409.02038v2 is in cache. Skipping download.
+2025-12-03 12:46:33,087 - INFO - Finished processing current batch from arXiv API.
+2025-12-03 12:46:33,087 - INFO - Waiting for 3 seconds to respect rate limiting...
+2025-12-03 12:46:36,088 - INFO - Fetched 30 of 1000 results.
+2025-12-03 12:46:36,089 - INFO - Fetching arXiv API URL: http://export.arxiv.org/api/query?search_query=all:text-to-sql&start=30&max_results=10
+2025-12-03 12:46:36,398 - INFO - Response status code: 200
+2025-12-03 12:46:36,399 - INFO - Parsing 10 entries from arXiv API response.
+2025-12-03 12:46:36,399 - INFO - Paper 2505.23838v1 already exists. Skipping download.
+2025-12-03 12:46:36,399 - INFO - Paper 2505.23838v1 is in cache. Skipping download.
+2025-12-03 12:46:36,399 - INFO - Paper 1910.08962v2 is in cache. Skipping download.
+2025-12-03 12:46:36,399 - INFO - Paper 2112.06311v4 already exists. Skipping download.
+2025-12-03 12:46:36,399 - INFO - Paper 2112.06311v4 is in cache. Skipping download.
+2025-12-03 12:46:36,399 - INFO - Paper 2502.05237v1 already exists. Skipping download.
+2025-12-03 12:46:36,399 - INFO - Paper 2502.05237v1 is in cache. Skipping download.
+2025-12-03 12:46:36,399 - INFO - Paper 2208.13629v1 is in cache. Skipping download.
+2025-12-03 12:46:36,399 - INFO - Paper 2509.07159v1 already exists. Skipping download.
+2025-12-03 12:46:36,399 - INFO - Paper 2509.07159v1 is in cache. Skipping download.
+2025-12-03 12:46:36,399 - INFO - Paper 2409.15985v1 already exists. Skipping download.
+2025-12-03 12:46:36,400 - INFO - Paper 2409.15985v1 is in cache. Skipping download.
+2025-12-03 12:46:36,400 - INFO - Paper 2402.14851v2 is in cache. Skipping download.
+2025-12-03 12:46:36,400 - INFO - Paper 2506.03598v3 is in cache. Skipping download.
+2025-12-03 12:46:36,400 - INFO - Paper 2306.00739v4 already exists. Skipping download.
+2025-12-03 12:46:36,400 - INFO - Paper 2306.00739v4 is in cache. Skipping download.
+2025-12-03 12:46:36,400 - INFO - Finished processing current batch from arXiv API.
+2025-12-03 12:46:36,400 - INFO - Waiting for 3 seconds to respect rate limiting...
+2025-12-03 12:46:39,401 - INFO - Fetched 40 of 1000 results.
+2025-12-03 12:46:39,402 - INFO - Fetching arXiv API URL: http://export.arxiv.org/api/query?search_query=all:text-to-sql&start=40&max_results=10
+2025-12-03 12:46:39,705 - INFO - Response status code: 200
+2025-12-03 12:46:39,705 - INFO - Parsing 10 entries from arXiv API response.
+2025-12-03 12:46:39,705 - INFO - Paper 2511.04710v1 is in cache. Skipping download.
+2025-12-03 12:46:39,705 - INFO - Paper 2306.00739v4 already exists. Skipping download.
+2025-12-03 12:46:39,705 - INFO - Paper 2306.00739v4 is in cache. Skipping download.
+2025-12-03 12:46:39,705 - INFO - Paper 2306.04480v1 is in cache. Skipping download.
+2025-12-03 12:46:39,706 - INFO - Paper 2311.02883v1 is in cache. Skipping download.
+2025-12-03 12:46:39,706 - INFO - Paper 2410.01066v2 already exists. Skipping download.
+2025-12-03 12:46:39,706 - INFO - Paper 2410.01066v2 is in cache. Skipping download.
+2025-12-03 12:46:39,706 - INFO - Paper 2506.09359v1 is in cache. Skipping download.
+2025-12-03 12:46:39,706 - INFO - Paper 2504.09824v1 already exists. Skipping download.
+2025-12-03 12:46:39,706 - INFO - Paper 2504.09824v1 is in cache. Skipping download.
+2025-12-03 12:46:39,706 - INFO - Paper 2305.16265v3 is in cache. Skipping download.
+2025-12-03 12:46:39,706 - INFO - Paper 2405.09593v1 already exists. Skipping download.
+2025-12-03 12:46:39,706 - INFO - Paper 2405.09593v1 is in cache. Skipping download.
+2025-12-03 12:46:39,706 - INFO - Paper 2408.08779v2 already exists. Skipping download.
+2025-12-03 12:46:39,706 - INFO - Paper 2408.08779v2 is in cache. Skipping download.
+2025-12-03 12:46:39,706 - INFO - Finished processing current batch from arXiv API.
+2025-12-03 12:46:39,706 - INFO - Waiting for 3 seconds to respect rate limiting...
+2025-12-03 12:46:42,708 - INFO - Fetched 50 of 1000 results.
+2025-12-03 12:46:42,708 - INFO - Fetching arXiv API URL: http://export.arxiv.org/api/query?search_query=all:text-to-sql&start=50&max_results=10
+2025-12-03 12:46:43,006 - INFO - Response status code: 200
+2025-12-03 12:46:43,007 - INFO - Parsing 10 entries from arXiv API response.
+2025-12-03 12:46:43,007 - INFO - Paper 2501.09310v2 already exists. Skipping download.
+2025-12-03 12:46:43,007 - INFO - Paper 2501.09310v2 is in cache. Skipping download.
+2025-12-03 12:46:43,007 - INFO - Paper 2507.22478v1 already exists. Skipping download.
+2025-12-03 12:46:43,007 - INFO - Paper 2507.22478v1 is in cache. Skipping download.
+2025-12-03 12:46:43,007 - INFO - Paper 2312.11242v6 is in cache. Skipping download.
+2025-12-03 12:46:43,007 - INFO - Paper 2505.17231v1 already exists. Skipping download.
+2025-12-03 12:46:43,007 - INFO - Paper 2505.17231v1 is in cache. Skipping download.
+2025-12-03 12:46:43,007 - INFO - Paper 2205.07686v3 is in cache. Skipping download.
+2025-12-03 12:46:43,007 - INFO - Paper 2203.06958v1 is in cache. Skipping download.
+2025-12-03 12:46:43,007 - INFO - Paper 2210.12096v1 is in cache. Skipping download.
+2025-12-03 12:46:43,007 - INFO - Paper 2502.06759v4 already exists. Skipping download.
+2025-12-03 12:46:43,007 - INFO - Paper 2502.06759v4 is in cache. Skipping download.
+2025-12-03 12:46:43,008 - INFO - Paper 2312.14798v1 already exists. Skipping download.
+2025-12-03 12:46:43,008 - INFO - Paper 2312.14798v1 is in cache. Skipping download.
+2025-12-03 12:46:43,008 - INFO - Paper 2409.10007v1 already exists. Skipping download.
+2025-12-03 12:46:43,008 - INFO - Paper 2409.10007v1 is in cache. Skipping download.
+2025-12-03 12:46:43,008 - INFO - Finished processing current batch from arXiv API.
+2025-12-03 12:46:43,008 - INFO - Waiting for 3 seconds to respect rate limiting...
+2025-12-03 12:46:46,009 - INFO - Fetched 60 of 1000 results.
+2025-12-03 12:46:46,010 - INFO - Fetching arXiv API URL: http://export.arxiv.org/api/query?search_query=all:text-to-sql&start=60&max_results=10
+2025-12-03 12:46:46,310 - INFO - Response status code: 200
+2025-12-03 12:46:46,310 - INFO - Parsing 10 entries from arXiv API response.
+2025-12-03 12:46:46,310 - INFO - Paper 2411.18923v2 already exists. Skipping download.
+2025-12-03 12:46:46,310 - INFO - Paper 2411.18923v2 is in cache. Skipping download.
+2025-12-03 12:46:46,310 - INFO - Paper 2301.08881v2 is in cache. Skipping download.
+2025-12-03 12:46:46,310 - INFO - Paper 2507.06467v1 already exists. Skipping download.
+2025-12-03 12:46:46,310 - INFO - Paper 2507.06467v1 is in cache. Skipping download.
+2025-12-03 12:46:46,311 - INFO - Paper 2409.10007v1 already exists. Skipping download.
+2025-12-03 12:46:46,311 - INFO - Paper 2409.10007v1 is in cache. Skipping download.
+2025-12-03 12:46:46,311 - INFO - Paper 2210.12674v1 is in cache. Skipping download.
+2025-12-03 12:46:46,311 - INFO - Paper 2505.22096v1 already exists. Skipping download.
+2025-12-03 12:46:46,311 - INFO - Paper 2505.22096v1 is in cache. Skipping download.
+2025-12-03 12:46:46,311 - INFO - Paper 2310.17342v1 is in cache. Skipping download.
+2025-12-03 12:46:46,311 - INFO - Paper 2411.00073v2 already exists. Skipping download.
+2025-12-03 12:46:46,311 - INFO - Paper 2411.00073v2 is in cache. Skipping download.
+2025-12-03 12:46:46,311 - INFO - Paper 2210.11888v2 is in cache. Skipping download.
+2025-12-03 12:46:46,311 - INFO - Paper 2502.14913v1 already exists. Skipping download.
+2025-12-03 12:46:46,311 - INFO - Paper 2502.14913v1 is in cache. Skipping download.
+2025-12-03 12:46:46,311 - INFO - Finished processing current batch from arXiv API.
+2025-12-03 12:46:46,311 - INFO - Waiting for 3 seconds to respect rate limiting...
+2025-12-03 12:46:49,312 - INFO - Fetched 70 of 1000 results.
+2025-12-03 12:46:49,313 - INFO - Fetching arXiv API URL: http://export.arxiv.org/api/query?search_query=all:text-to-sql&start=70&max_results=10
+2025-12-03 12:46:49,634 - INFO - Response status code: 200
+2025-12-03 12:46:49,634 - INFO - Parsing 10 entries from arXiv API response.
+2025-12-03 12:46:49,635 - INFO - Paper 2410.12916v2 already exists. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2410.12916v2 is in cache. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2305.16253v2 is in cache. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2505.05286v2 already exists. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2505.05286v2 is in cache. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2307.07306v1 is in cache. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2404.14453v1 already exists. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2404.14453v1 is in cache. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2406.09133v1 is in cache. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2407.01183v3 is in cache. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2511.10192v2 already exists. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2511.10192v2 is in cache. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2403.15879v6 already exists. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2403.15879v6 is in cache. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2502.10739v1 already exists. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Paper 2502.10739v1 is in cache. Skipping download.
+2025-12-03 12:46:49,635 - INFO - Finished processing current batch from arXiv API.
+2025-12-03 12:46:49,635 - INFO - Waiting for 3 seconds to respect rate limiting...
+2025-12-03 12:46:52,637 - INFO - Fetched 80 of 1000 results.
+2025-12-03 12:46:52,638 - INFO - Fetching arXiv API URL: http://export.arxiv.org/api/query?search_query=all:text-to-sql&start=80&max_results=10
+2025-12-03 12:46:52,995 - INFO - Response status code: 200
+2025-12-03 12:46:52,996 - INFO - Parsing 10 entries from arXiv API response.
+2025-12-03 12:46:52,996 - INFO - Paper 2503.23157v2 already exists. Skipping download.
+2025-12-03 12:46:52,996 - INFO - Paper 2503.23157v2 is in cache. Skipping download.
+2025-12-03 12:46:52,996 - INFO - Paper 2401.10506v1 already exists. Skipping download.
+2025-12-03 12:46:52,996 - INFO - Paper 2401.10506v1 is in cache. Skipping download.
+2025-12-03 12:46:52,996 - INFO - Paper 2511.13590v2 already exists. Skipping download.
+2025-12-03 12:46:52,996 - INFO - Paper 2511.13590v2 is in cache. Skipping download.
+2025-12-03 12:46:52,996 - INFO - Paper 2404.12560v1 already exists. Skipping download.
+2025-12-03 12:46:52,996 - INFO - Paper 2404.12560v1 is in cache. Skipping download.
+2025-12-03 12:46:52,996 - INFO - Paper 1905.13326v1 is in cache. Skipping download.
+2025-12-03 12:46:52,996 - INFO - Paper 2010.12773v3 is in cache. Skipping download.
+2025-12-03 12:46:52,996 - INFO - Paper 2203.07781v2 is in cache. Skipping download.
+2025-12-03 12:46:52,996 - INFO - Paper 2407.19517v1 already exists. Skipping download.
+2025-12-03 12:46:52,997 - INFO - Paper 2407.19517v1 is in cache. Skipping download.
+2025-12-03 12:46:52,997 - INFO - Paper 2508.14056v1 already exists. Skipping download.
+2025-12-03 12:46:52,997 - INFO - Paper 2508.14056v1 is in cache. Skipping download.
+2025-12-03 12:46:52,997 - INFO - Paper 2510.08896v1 already exists. Skipping download.
+2025-12-03 12:46:52,997 - INFO - Paper 2510.08896v1 is in cache. Skipping download.
+2025-12-03 12:46:52,997 - INFO - Finished processing current batch from arXiv API.
+2025-12-03 12:46:52,997 - INFO - Waiting for 3 seconds to respect rate limiting...
+2025-12-03 12:46:55,998 - INFO - Fetched 90 of 1000 results.
+2025-12-03 12:46:55,998 - INFO - Fetching arXiv API URL: http://export.arxiv.org/api/query?search_query=all:text-to-sql&start=90&max_results=10
+2025-12-03 12:46:56,307 - INFO - Response status code: 200
+2025-12-03 12:46:56,307 - INFO - Parsing 10 entries from arXiv API response.
+2025-12-03 12:46:56,307 - INFO - Paper 2509.25672v1 already exists. Skipping download.
+2025-12-03 12:46:56,307 - INFO - Paper 2509.25672v1 is in cache. Skipping download.
+2025-12-03 12:46:56,307 - INFO - Paper 2501.16607v3 already exists. Skipping download.
+2025-12-03 12:46:56,307 - INFO - Paper 2501.16607v3 is in cache. Skipping download.
+2025-12-03 12:46:56,307 - INFO - Paper 2303.12898v1 is in cache. Skipping download.
+2025-12-03 12:46:56,307 - INFO - Paper 2504.02055v1 already exists. Skipping download.
+2025-12-03 12:46:56,307 - INFO - Paper 2504.02055v1 is in cache. Skipping download.
+2025-12-03 12:46:56,307 - INFO - Paper 2305.14215v2 is in cache. Skipping download.
+2025-12-03 12:46:56,308 - INFO - Paper 2407.14568v1 already exists. Skipping download.
+2025-12-03 12:46:56,308 - INFO - Paper 2407.14568v1 is in cache. Skipping download.
+2025-12-03 12:46:56,308 - INFO - Paper 2501.09527v1 already exists. Skipping download.
+2025-12-03 12:46:56,308 - INFO - Paper 2501.09527v1 is in cache. Skipping download.
+2025-12-03 12:46:56,308 - INFO - Paper 2503.02240v2 already exists. Skipping download.
+2025-12-03 12:46:56,308 - INFO - Paper 2503.02240v2 is in cache. Skipping download.
+2025-12-03 12:46:56,308 - INFO - Paper 2412.12522v1 already exists. Skipping download.
+2025-12-03 12:46:56,308 - INFO - Paper 2412.12522v1 is in cache. Skipping download.
+2025-12-03 12:46:56,308 - INFO - Paper 2211.15363v4 is in cache. Skipping download.
+2025-12-03 12:46:56,308 - INFO - Finished processing current batch from arXiv API.
+2025-12-03 12:46:56,308 - INFO - Waiting for 3 seconds to respect rate limiting...
+2025-12-03 12:46:59,309 - INFO - Fetched 100 of 1000 results.
+2025-12-03 12:46:59,309 - INFO - Fetching arXiv API URL: http://export.arxiv.org/api/query?search_query=all:text-to-sql&start=100&max_results=10
+2025-12-03 12:46:59,607 - INFO - Response status code: 200
+2025-12-03 12:46:59,607 - INFO - Parsing 10 entries from arXiv API response.
+2025-12-03 12:46:59,607 - INFO - Paper 2310.18376v4 already exists. Skipping download.
+2025-12-03 12:46:59,607 - INFO - Paper 2310.18376v4 is in cache. Skipping download.
+2025-12-03 12:46:59,607 - INFO - Paper 2211.15363v4 is in cache. Skipping download.
+2025-12-03 12:46:59,607 - INFO - Paper 2503.05445v3 already exists. Skipping download.
+2025-12-03 12:46:59,608 - INFO - Paper 2503.05445v3 is in cache. Skipping download.
+2025-12-03 12:46:59,608 - INFO - Paper 2508.15276v1 already exists. Skipping download.
+2025-12-03 12:46:59,608 - INFO - Paper 2508.15276v1 is in cache. Skipping download.
+2025-12-03 12:46:59,608 - INFO - Paper 2106.02282v2 is in cache. Skipping download.
+2025-12-03 12:46:59,608 - INFO - Paper 2509.09684v1 already exists. Skipping download.
+2025-12-03 12:46:59,608 - INFO - Paper 2509.09684v1 is in cache. Skipping download.
+2025-12-03 12:46:59,608 - INFO - Paper 2305.13073v2 is in cache. Skipping download.
+2025-12-03 12:46:59,608 - INFO - Paper 2407.08273v2 is in cache. Skipping download.
+2025-12-03 12:46:59,608 - INFO - Paper 2502.15980v2 already exists. Skipping download.
+2025-12-03 12:46:59,608 - INFO - Paper 2502.15980v2 is in cache. Skipping download.
+2025-12-03 12:46:59,608 - INFO - Paper 2405.06674v1 already exists. Skipping download.
+2025-12-03 12:46:59,608 - INFO - Paper 2405.06674v1 is in cache. Skipping download.
+2025-12-03 12:46:59,608 - INFO - Finished processing current batch from arXiv API.
+2025-12-03 12:46:59,608 - INFO - Waiting for 3 seconds to respect rate limiting...
