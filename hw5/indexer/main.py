@@ -1,5 +1,5 @@
 import logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w', filename='hw5.log')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w', filename='indexer.log')
 logger = logging.getLogger(__name__)
 
 import arxiv_adapter
@@ -19,6 +19,7 @@ def main():
     indexer: Indexer = Indexer("research_papers")
     indexer.create_index()
     indexer.index_documents_bulk(dataloader.load_data_from_directory("arxiv"))
+    indexer.delete_index()
 
 
 if __name__ == "__main__":

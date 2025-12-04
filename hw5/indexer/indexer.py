@@ -34,13 +34,20 @@ class Indexer:
         }
         if not self.es.indices.exists(index=self.index_name):
             self.es.indices.create(index=self.index_name, body=settings)
+            logger.info(f"Index {self.index_name} created.")
+        else:
+            logger.info(f"Index {self.index_name} already exists.")
 
     def delete_index(self):
         if self.es.indices.exists(index=self.index_name):
             self.es.indices.delete(index=self.index_name)
+            logger.info(f"Index {self.index_name} deleted.")
+        else:
+            logger.info(f"Index {self.index_name} does not exist. No deletion performed.")
 
     def index_document(self, document: dict):
         self.es.index(index=self.index_name, document=document)
+        logger.info(f"Indexed document: {document.get('title', 'N/A')}")
 
     def index_documents_bulk(self, documents: list):
         from elasticsearch import helpers

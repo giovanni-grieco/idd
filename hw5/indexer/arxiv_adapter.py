@@ -54,24 +54,39 @@ def download_paper(url: str, filename: str) -> bool:
         logger.warning(f"Failed to download paper from {url}. Status code: {response.status_code}. Skipping...")
         return False
 
-
+def calculate_actual_total(query: str, max_results: int) -> int:
+    search_query = f"all:{query}"
+    url=f'http://export.arxiv.org/api/query?search_query={search_query}&start=0&max_results={max_results}'
+    response = requests.get(url)
+    if response.status_code == 200:
+        root = ET.fromstring(response.content)
+        ns = {'atom': 'http://www.w3.org/2005/Atom'}
+        total_results = int(root.find('atom:totalResults', ns).text)
+        return min(total_results, max_results)
+    else:
+        logger.error(f"Error fetching total results from arXiv API: {response.status_code}")
+        return 0
 
 # Fetch the candidate papers with arxiv search API
 # Filter only the ones that have HTML papers
-def fetch_arxiv(query: str, max_results: int = 10, start: int = 0, bar=None):
+def fetch_arxiv(query: str, max_results: int = 10, start: int = 0) -> int:
     search_query = f"all:{query}"
     url=f'http://export.arxiv.org/api/query?search_query={search_query}&start={start}&max_results={max_results}'
     logger.info(f"Fetching arXiv API URL: {url}")
 
     response = requests.get(url)
     logger.info(f"Response status code: {response.status_code}")
-
+    entry_count: int = 0
     if response.status_code == 200:
         root = ET.fromstring(response.content)
         ns = {'atom': 'http://www.w3.org/2005/Atom'}
-        logger.info(f"Parsing {len(root.findall('atom:entry', ns))} entries from arXiv API response.")
+        entry_count = len(root.findall('atom:entry', ns))
+        logger.info(f"Parsing {entry_count} entries from arXiv API response.")
+        # Check if there are any entries left
+        if entry_count == 0:
+            logger.info("No more entries found in arXiv API response.")
+
         for entry in root.findall('atom:entry', ns):
-            start_time = time.time()
             
             title = (entry.find('atom:title', ns).text or '').strip()
             summary = (entry.find('atom:summary', ns).text or '').strip()
@@ -107,18 +122,14 @@ def fetch_arxiv(query: str, max_results: int = 10, start: int = 0, bar=None):
                 if in_cache(f"{filename_base}.cache"):
                     logger.info(f"Paper {filename_base} is in cache. Skipping download.")
 
-            elapsed = time.time() - start_time
-            if bar:
-                bar.update(1)
-
 
     else:
         logger.error(f"Error fetching data from arXiv API: {response.status_code}")
         logger.error(response.text)
     logger.info("Finished processing current batch from arXiv API.")
     logger.info(f"Waiting for {time_to_next_request} seconds to respect rate limiting...")
-
     time.sleep(time_to_next_request)
+    return entry_count
 
 def fetch(query: str, total_amount: int, max_results: int = 10, start: int = 0):
 
@@ -138,13 +149,16 @@ def fetch(query: str, total_amount: int, max_results: int = 10, start: int = 0):
     processed = start
     start_time = time.time()
 
-    with tqdm.tqdm(total=total, initial=processed, desc="Fetching", unit="paper", ncols=100) as bar:
-        while processed < total:
-            batch_size = min(max_results, total - processed)
-            # fetch the batch (fetch_arxiv already respects rate limiting per entry)
-            fetch_arxiv(query, batch_size, processed, bar)
-            processed += batch_size
-            logger.info(f"Fetched {processed} of {total} results.")
+    done: bool = False
+    while processed < total and not done:
+        # fetch the batch (fetch_arxiv already respects rate limiting per entry)
+        entry_count: int = fetch_arxiv(query, max_results, processed)
+        print(entry_count)
+        logger.info(f"Fetched {processed}+{entry_count} of {total} results.")
+        processed += entry_count
+        if entry_count == 0:
+            logger.info("No more entries to process from arXiv API. Ending fetch.")
+            done = True
 
     total_elapsed = time.time() - start_time
     logger.info(f"Completed fetch of {total} items in {_format_seconds(total_elapsed)}.")
