@@ -73,9 +73,10 @@ def fetch_arxiv(query: str, max_results: int = 10, start: int = 0) -> int:
     search_query = f"all:{query}"
     url=f'http://export.arxiv.org/api/query?search_query={search_query}&start={start}&max_results={max_results}'
     logger.info(f"Fetching arXiv API URL: {url}")
-
     response = requests.get(url)
     logger.info(f"Response status code: {response.status_code}")
+    logger.info(f"Waiting for {time_to_next_request} seconds to respect rate limiting...")
+    time.sleep(time_to_next_request)
     entry_count: int = 0
     if response.status_code == 200:
         root = ET.fromstring(response.content)
