@@ -1,3 +1,4 @@
 requests
 lxml
 tqdm
+elasticsearch==7.17.0
