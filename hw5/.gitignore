@@ -1,4 +1,5 @@
 .venv/
 arxiv/
+arxiv.zip
 pubmed/
 *.log
