@@ -4,6 +4,9 @@
 import os
 import json
 import html_cleaner
+import logging
+
+logger = logging.getLogger(__name__)
 
 def load_data_from_directory(directory_path: str) -> iter:
     for metadata_filename in os.listdir(directory_path):
@@ -15,6 +18,7 @@ def load_data_from_directory(directory_path: str) -> iter:
                 with open(file_path, 'r', encoding='utf-8') as content_file:
                     content = content_file.read()
                     content = html_cleaner.clean_html(content)
+                    #print(content)
                     metadata = json.load(metadata_file)
                     document = {
                         "title": metadata.get("title", ""),
@@ -24,4 +28,5 @@ def load_data_from_directory(directory_path: str) -> iter:
                         "link": metadata.get("link", ""),
                         "content": content
                     }
+                    logger.info(f"Loaded document: {metadata.get('title', 'N/A')}. Paper content size: {len(content)} characters.")
                     yield document

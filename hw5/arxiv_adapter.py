@@ -1,5 +1,5 @@
 import requests
-from lxml import etree as ET
+import lxml.etree as ET
 import json
 import os
 import time
@@ -8,7 +8,6 @@ import tqdm
 
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filemode='w', filename='arxiv_adapter.log')
 
 source_folder_name = "arxiv"
 cache_folder_name = "cache"
@@ -59,7 +58,7 @@ def download_paper(url: str, filename: str) -> bool:
 
 # Fetch the candidate papers with arxiv search API
 # Filter only the ones that have HTML papers
-def fetch_arxiv(query: str, max_results: int = 10, start: int = 0):
+def fetch_arxiv(query: str, max_results: int = 10, start: int = 0, bar=None):
     search_query = f"all:{query}"
     url=f'http://export.arxiv.org/api/query?search_query={search_query}&start={start}&max_results={max_results}'
     logger.info(f"Fetching arXiv API URL: {url}")
@@ -72,12 +71,14 @@ def fetch_arxiv(query: str, max_results: int = 10, start: int = 0):
         ns = {'atom': 'http://www.w3.org/2005/Atom'}
         logger.info(f"Parsing {len(root.findall('atom:entry', ns))} entries from arXiv API response.")
         for entry in root.findall('atom:entry', ns):
+            start_time = time.time()
+            
             title = (entry.find('atom:title', ns).text or '').strip()
             summary = (entry.find('atom:summary', ns).text or '').strip()
             published = (entry.find('atom:published', ns).text or '').strip()
             arxiv_id = (entry.find('atom:id', ns).text or '').strip()
             authors = [a.text for a in entry.findall('atom:author/atom:name', ns)]
-            link: str = next((l.get('href') for l in entry.findall('atom:link', ns) if l.get('rel') == 'alternate'), None)
+            link: str = next((l.get('href') for l in entry.findall('atom:link', ns) if l.get('rel') == 'alternate'), "")
             
 
             #print("Title:", title)
@@ -106,11 +107,17 @@ def fetch_arxiv(query: str, max_results: int = 10, start: int = 0):
                 if in_cache(f"{filename_base}.cache"):
                     logger.info(f"Paper {filename_base} is in cache. Skipping download.")
 
+            elapsed = time.time() - start_time
+            if bar:
+                bar.update(1)
+
+
     else:
         logger.error(f"Error fetching data from arXiv API: {response.status_code}")
         logger.error(response.text)
     logger.info("Finished processing current batch from arXiv API.")
     logger.info(f"Waiting for {time_to_next_request} seconds to respect rate limiting...")
+
     time.sleep(time_to_next_request)
 
 def fetch(query: str, total_amount: int, max_results: int = 10, start: int = 0):
@@ -134,24 +141,11 @@ def fetch(query: str, total_amount: int, max_results: int = 10, start: int = 0):
     with tqdm.tqdm(total=total, initial=processed, desc="Fetching", unit="paper", ncols=100) as bar:
         while processed < total:
             batch_size = min(max_results, total - processed)
-
             # fetch the batch (fetch_arxiv already respects rate limiting per entry)
-            fetch_arxiv(query, batch_size, processed)
-
+            fetch_arxiv(query, batch_size, processed, bar)
             processed += batch_size
-            bar.update(batch_size)
-
-            # timing and estimation
-            elapsed = time.time() - start_time
-            avg_per_item = elapsed / processed if processed > 0 else 0.0
-            est_total = avg_per_item * total if avg_per_item else 0.0
-
-            bar.set_postfix({
-                "elapsed": _format_seconds(elapsed),
-                "est_total": _format_seconds(est_total)
-            })
-
             logger.info(f"Fetched {processed} of {total} results.")
 
     total_elapsed = time.time() - start_time
     logger.info(f"Completed fetch of {total} items in {_format_seconds(total_elapsed)}.")
+    os.chdir("..")

@@ -1,6 +1,9 @@
 # Vogliamo leggere i file e indicizzarli dentro elastic search.
 # Vogliamo quindi creare un indice appropriato e popolarlo con i dati.
 import elasticsearch
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Indexer:
     def __init__(self, index_name: str):
@@ -37,9 +40,10 @@ class Indexer:
             self.es.indices.delete(index=self.index_name)
 
     def index_document(self, document: dict):
-        self.es.index(index=self.index_name, body=document)
+        self.es.index(index=self.index_name, document=document)
 
     def index_documents_bulk(self, documents: list):
+        from elasticsearch import helpers
         actions = [
             {
                 "_index": self.index_name,
@@ -47,4 +51,4 @@ class Indexer:
             }
             for doc in documents
         ]
-        elasticsearch.helpers.bulk(self.es, actions)
+        helpers.bulk(self.es, actions)
