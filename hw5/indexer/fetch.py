@@ -1,0 +1,22 @@
+import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w', filename= "fetch.log")
+logger = logging.getLogger(__name__)
+
+import components.arxiv_adapter as arxiv_adapter
+import components.pubmed_adapter as pubmed_adapter
+
+
+arxiv_query = "text-to-sql+OR+\"Natural language to SQL\""
+pubmed_query = ""
+total_amount = 3000
+
+
+def main():
+    print("Fetching and indexing research papers...")
+    arxiv_adapter.fetch(arxiv_query, total_amount, 1000)
+    pubmed_adapter.fetch(pubmed_query, total_amount)
+    print("Fetched research papers from arXiv and PubMed.")
+
+
+if __name__ == "__main__":
+    main()

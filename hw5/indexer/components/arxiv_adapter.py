@@ -4,7 +4,6 @@ import json
 import os
 import time
 import logging
-import tqdm
 
 
 logger = logging.getLogger(__name__)
@@ -154,7 +153,7 @@ def fetch(query: str, total_amount: int, max_results: int = 10, start: int = 0):
     while processed < total and not done:
         # fetch the batch (fetch_arxiv already respects rate limiting per entry)
         entry_count: int = fetch_arxiv(query, max_results, processed)
-        print(entry_count)
+        #print(entry_count)
         logger.info(f"Fetched {processed}+{entry_count} of {total} results.")
         processed += entry_count
         if entry_count == 0:

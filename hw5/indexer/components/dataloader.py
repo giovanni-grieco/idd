@@ -3,12 +3,12 @@
 
 import os
 import json
-import html_cleaner
+import components.html_cleaner as html_cleaner
 import logging
 
 logger = logging.getLogger(__name__)
 
-def load_data_from_directory(directory_path: str) -> iter:
+def load_research_papers_data_from_directory(directory_path: str) -> iter:
     for metadata_filename in os.listdir(directory_path):
         if metadata_filename.endswith(".json"):
             filename = metadata_filename.replace(".json", ".html")
@@ -30,3 +30,10 @@ def load_data_from_directory(directory_path: str) -> iter:
                     }
                     logger.info(f"Loaded document: {metadata.get('title', 'N/A')}. Paper content size: {len(content)} characters.")
                     yield document
+
+def load_figures_data_from_directory(directory_path: str) -> iter:
+    yield None
+
+def load_tables_data_from_directory(directory_path: str) -> iter:
+    yield None
+

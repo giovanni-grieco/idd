@@ -16,3 +16,7 @@ Estrazione ed indicizzazione di paper provenienti da Arxiv e PubMed
 
 ## Documentazione
 Per arxiv [qui](https://info.arxiv.org/help/api/user-manual.html) dovrebbe esserci la maggiorparte della roba
+
+# Client & Indexer
+
+Sono disponibili due sistemi principale, il primo è un client che permette di interagire con elastic search tramite una GUI, mentre il secondo sistema è quello che si occupa di scaricare i dati, elaborarli secondo le specifiche e indicizzarli all'interno di elastic search.
