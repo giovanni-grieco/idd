@@ -10,9 +10,14 @@ In questa cartella ci sono tutti gli strumenti per scaricare i dati, elaborarli 
 
 # Come lanciare gli script?
 
-Bisogna
+Su CLI scrivere:
 
 ```bash
 python3 -m <nome_modulo>
+```
+
+ad esempio
+```bash
+python3 -m fetch
 ```
 
