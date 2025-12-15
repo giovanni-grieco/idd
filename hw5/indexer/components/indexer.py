@@ -2,6 +2,7 @@
 # Vogliamo quindi creare un indice appropriato e popolarlo con i dati.
 import elasticsearch
 import logging
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -11,27 +12,8 @@ class Indexer:
         self.es = elasticsearch.Elasticsearch(hosts=["http://localhost:9200"])
 
     def create_index(self):
-        settings = {
-            "settings": {
-                "analysis": {
-                    "analyzer": {
-                        "default": {
-                            "type": "english"
-                        }
-                    }
-                }
-            },
-            "mappings": {
-                "properties": {
-                    "title": {"type": "text", "analyzer": "english"},
-                    "authors": {"type": "keyword"},
-                    "published": {"type": "date"},
-                    "summary": {"type": "text", "analyzer": "english"},
-                    "link": {"type": "keyword"},
-                    "content": {"type": "text", "analyzer": "english"}
-                }
-            }
-        }
+        settings = json.load(open(f'indexer_settings.json'))[self.index_name]
+        logger.info(f"Creating index {self.index_name} with settings: {settings}")
         if not self.es.indices.exists(index=self.index_name):
             self.es.indices.create(index=self.index_name, body=settings)
             logger.info(f"Index {self.index_name} created.")
