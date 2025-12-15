@@ -14,9 +14,25 @@ Estrazione ed indicizzazione di paper provenienti da Arxiv e PubMed
 - Indicizzazione delle figure. Scrivere il codice per indicizzare le figure utilizzando Elasticsearch (o Lucene). Ogni figura viene indicizzata come un documento, con i seguenti campi: url (url della figura), paper_id (ID dell'articolo), table_id (ID della figura all’interno dell’articolo),  caption (testo della caption della figura), mentions (lista dei paragrafi del paper che citano la figura).
 - Funzionalità di ricerca avanzate. Il sistema deve permettere interrogazioni per tabelle, figure, documenti su uno o più campi, ricerca per parole chiave, combinazioni di query (es. ricerca booleana, full-text). Le funzionalità di ricerca devono essere disponibili tramite una semplice shell su riga di comando e tramite una semplice interfaccia web. 
 
-## Documentazione
-Per arxiv [qui](https://info.arxiv.org/help/api/user-manual.html) dovrebbe esserci la maggiorparte della roba
+# Documentazione API Esterne
+## Arxiv
+Per arxiv [qui](https://info.arxiv.org/help/api/user-manual.html#31-calling-the-api) dovrebbe esserci la maggiorparte della roba
 
+In particolare, bisogna usare usare i parametri nell'URL per far scorrere la finestra dell'indice.
+
+## PubMed
+Per PubMed, si accede all'indice con 
+```
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=cancer+immunotherapy&retmode=json&retstart=20&retmax=20
+```
+Da notare come **retstart** e **retmax** ci consentono di fare sliding window sull'indice
+
+Per scaricare i metadati di un certo paper, bisogna utilizzare
+```
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41391682&retmode=xml
+```
+
+Specificando l'id del paper
 # Client & Indexer
 
 Sono disponibili due sistemi principale, il primo è un client che permette di interagire con elastic search tramite una GUI, mentre il secondo sistema è quello che si occupa di scaricare i dati, elaborarli secondo le specifiche e indicizzarli all'interno di elastic search.
