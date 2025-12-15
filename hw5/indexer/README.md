@@ -8,6 +8,12 @@ In questa cartella ci sono tutti gli strumenti per scaricare i dati, elaborarli 
 - Index
 - Delete Index (quando non serve più).
 
+# Moduli disponibili
+- fetch 
+- create_index
+- index
+- delete_index
+
 # Come lanciare gli script?
 
 Su CLI scrivere:

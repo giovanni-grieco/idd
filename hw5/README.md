@@ -20,3 +20,34 @@ Per arxiv [qui](https://info.arxiv.org/help/api/user-manual.html) dovrebbe esser
 # Client & Indexer
 
 Sono disponibili due sistemi principale, il primo è un client che permette di interagire con elastic search tramite una GUI, mentre il secondo sistema è quello che si occupa di scaricare i dati, elaborarli secondo le specifiche e indicizzarli all'interno di elastic search.
+
+# Estrazione Tabelle, Paragrafi e Figure
+Dobbiamo non solo estrarre le tabelle, ma anche i paragrafi che le citano direttamente per nome oppure che citano termini contenuti all'interno della tabella.
+Questa vuol dire che esiste una relazione one-to-many tra tabella-paragrafo
+
+Il problema diventa quindi l'individuazione della tabella, l'estrazione dati dall'interno della tabella da poter usare per l'indicizzazione e da poter usare per rilevare i paragrafi.
+
+Inoltre bisogna poter rilevare i paragrafi, estrarli e vedere se all'interno viene citato la tabella i-esima
+
+Si potrebbe anche invertire, cioè, prima rileviamo all'interno del paper tutti i paragrafi e tutti le tabelle che citano per singolo paragrafo, e alla fine estraiamo anche le tabelle e le colleghiamo alle informazioni relative dei paragrafi.
+
+## arXiv
+### Tabelle
+Una tabella è incluse sempre nei TAG ```<figure> ... </figure>``` con class="ltx_table". Questo ci fa subito trovare le tabelle.
+Inoltre all'interno c'è il tag ```<figcaption>...</figcaption>``` che delinea la caption della tabella in questo caso.
+### Paragrafi
+Per i paragrafi esistono tag html ```<p>``` oppure ```<div>``` con class="ltx_p" oppure class="ltx_para" oppure class="ltx_paragraph".
+
+La classe ```ltx_p``` è quella che appare più spesso e probabilmente quella su cui fare più affidamento.
+### Figure
+TBD
+
+### Rilevazione di citazioni relative a tabelle e figure dentro ai paragrafi
+TBD
+
+## PubMed
+TBD
+### Tabelle
+### Paragrafi
+### Figure
+### Rilevazione di citazioni relative a tabelle e figure dentro ai paragrafi
