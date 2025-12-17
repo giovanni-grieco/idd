@@ -50,14 +50,18 @@ Si potrebbe anche invertire, cioè, prima rileviamo all'interno del paper tutti 
 ## arXiv
 ### Tabelle
 Una tabella è incluse sempre nei TAG ```<figure> ... </figure>``` con class="ltx_table". Questo ci fa subito trovare le tabelle.
+Inoltre, gli HTML delle tabelle hanno anche un ID univoco che specificano in quale capitolo si trovano e il loro id della tabella ad esempio id="S1.T1" che vuol dire "figura 1 in sezione 1"
+
 Inoltre all'interno c'è il tag ```<figcaption>...</figcaption>``` che delinea la caption della tabella in questo caso.
 ### Paragrafi
 Per i paragrafi esistono tag html ```<p>``` oppure ```<div>``` con class="ltx_p" oppure class="ltx_para" oppure class="ltx_paragraph".
 
 La classe ```ltx_p``` è quella che appare più spesso e probabilmente quella su cui fare più affidamento.
 ### Figure
-TBD
+Una figura, è sempre inclusa nei tag ```<figure> ... </figure>``` con class="ltx_figure". Questo ci fa subito trovare le tabelle.
+Inoltre, gli HTML delle figure hanno anche un ID univoco che specificano in quale capitolo si trovano e il loro id della tabella ad esempio id="S1.F1" che vuol dire "figura 1 in sezione 1"
 
+Inoltre all'interno c'è il tag ```<figcaption>...</figcaption>``` che delinea la caption della tabella in questo caso.
 ### Rilevazione di citazioni relative a tabelle e figure dentro ai paragrafi
 TBD
 
