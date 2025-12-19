@@ -7,13 +7,13 @@ import components.fetcher.pubmed_fetcher as pubmed_fetcher
 
 
 arxiv_query = "text-to-sql+OR+\"Natural language to SQL\""
-pubmed_query = ""
+pubmed_query = "glyphosate+AND+cancer+risk"
 total_amount = 3000
 
 
 def main():
     print("Fetching and indexing research papers...")
-    arxiv_fetcher.fetch(arxiv_query, total_amount, 1000)
+    #arxiv_fetcher.fetch(arxiv_query, total_amount, 1000)
     pubmed_fetcher.fetch(pubmed_query, total_amount)
     print("Fetched research papers from arXiv and PubMed.")
 
