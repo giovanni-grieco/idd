@@ -24,7 +24,7 @@ def _format_seconds(sec: float) -> str:
 def extract_fulltext_link(pubmed_page) -> str:
     # There's usually a div with class 'full-text-links' that contains the links
     soup = bs4.BeautifulSoup(pubmed_page, 'html.parser')
-    full_text_div = soup.find('div', class_='full-text-links_list')
+    full_text_div = soup.find('div', class_='full-text-links-list')
     if full_text_div:
         link_tag = full_text_div.find('a', href=True)
         if link_tag:
@@ -127,7 +127,6 @@ def fetch_pubmed(query: str, max_results: int = 10, start: int = 0) -> int:
                         "summary": summary,
                         "link": link
                     }
-                    save_metadata_as_json(metadata, f"{filename_base}.json")
                     # Step 3: Download HTML version if available
                     # Search for full text link in the pubmed html page
                     pubmed_html_url = f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/"
@@ -143,6 +142,9 @@ def fetch_pubmed(query: str, max_results: int = 10, start: int = 0) -> int:
                     response_status = download_paper(html_url, f"{filename_base}.html")
                     if response_status:
                         logger.info(f"Downloaded and saved PubMed article {filename_base}")
+                        save_metadata_as_json(metadata, f"{filename_base}.json")
+                    else:
+                        logger.warning(f"Failed to download full text for PMID {pmid}.")
                     logger.info(f"Waiting for {time_to_next_request} seconds to respect rate limiting...")
                     time.sleep(time_to_next_request)
                 else:
