@@ -4,7 +4,6 @@ import json
 import os
 import time
 import logging
-import bs4
 
 logger = logging.getLogger(__name__)
 
@@ -20,18 +19,6 @@ def _format_seconds(sec: float) -> str:
     if h:
         return f"{h:d}:{m:02d}:{s:02d}"
     return f"{m:d}:{s:02d}"
-
-def extract_fulltext_link(pubmed_page) -> str:
-    # There's usually a div with class 'full-text-links' that contains the links
-    soup = bs4.BeautifulSoup(pubmed_page, 'html.parser')
-    full_text_div = soup.find('div', class_='full-text-links-list')
-    if full_text_div:
-        link_tag = full_text_div.find('a', href=True)
-        if link_tag:
-            logger.info(f"Found full text link: {link_tag['href']}")
-            return link_tag['href']
-    return ""
-    
 
 def save_metadata_as_json(metadata: dict, filename: str) -> bool:
     with open(filename, 'w') as f:
@@ -53,23 +40,25 @@ def in_cache(filename: str) -> bool:
 def exists_paper(filename: str) -> bool:
     return os.path.exists(filename)
 
-def download_paper(url: str, filename: str) -> bool:
+def download_pmc_xml(pmcid: str, filename: str) -> bool:
+    # Download full text XML from PMC using efetch
+    url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml"
     response = requests.get(url)
-    if response.status_code == 200:
+    if response.status_code == 200 and response.content.strip():
         with open(filename, 'wb') as f:
             f.write(response.content)
         return True
     else:
-        logger.warning(f"Failed to download paper from {url}. Status code: {response.status_code}. Skipping...")
+        logger.warning(f"Failed to download PMC XML for {pmcid}. Status code: {response.status_code}. Skipping...")
         return False
 
-def fetch_pubmed(query: str, max_results: int = 10, start: int = 0) -> int:
-    # Step 1: Search PubMed for article IDs
+def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0) -> int:
+    # Step 1: Search PMC for article IDs (only open access, full text)
     search_url = (
-        f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={query}"
+        f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pmc&term={query}"
         f"&retstart={start}&retmax={max_results}&retmode=json"
     )
-    logger.info(f"Fetching PubMed search URL: {search_url}")
+    logger.info(f"Fetching PMC search URL: {search_url}")
     search_response = requests.get(search_url)
     logger.info(f"Response status code: {search_response.status_code}")
     logger.info(f"Waiting for {time_to_next_request} seconds to respect rate limiting...")
@@ -79,47 +68,46 @@ def fetch_pubmed(query: str, max_results: int = 10, start: int = 0) -> int:
         search_data = search_response.json()
         id_list = search_data.get('esearchresult', {}).get('idlist', [])
         entry_count = len(id_list)
-        logger.info(f"Found {entry_count} PubMed IDs.")
+        logger.info(f"Found {entry_count} PMC IDs.")
         if entry_count == 0:
-            logger.info("No more entries found in PubMed search response.")
-        for pmid in id_list:
-            filename_base = pmid
+            logger.info("No more entries found in PMC search response.")
+        for pmcid in id_list:
+            filename_base = pmcid
             if not exists_paper(f"{filename_base}.json") and not in_cache(f"{filename_base}.cache"):
-                # Step 2: Fetch article metadata
+                # Step 2: Fetch article metadata and full text XML
                 fetch_url = (
-                    f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={pmid}&retmode=xml"
+                    f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml"
                 )
                 fetch_response = requests.get(fetch_url)
-                if fetch_response.status_code == 200:
+                if fetch_response.status_code == 200 and fetch_response.content.strip():
                     root = ET.fromstring(fetch_response.content)
-                    article = root.find('.//Article')
-                    title = article.findtext('ArticleTitle', default='').strip() if article is not None else ''
-                    summary = article.findtext('Abstract/AbstractText', default='').strip() if article is not None else ''
+                    article = root.find('.//article')
+                    title = ""
+                    summary = ""
                     authors = []
+                    published = ""
                     if article is not None:
-                        for author in article.findall('AuthorList/Author'):
-                            last = author.findtext('LastName', default='')
-                            first = author.findtext('ForeName', default='')
-                            full = f"{first} {last}".strip()
-                            if full:
-                                authors.append(full)
-                    published = ''
-                    # Try to get publication date from PubDate or ArticleDate
-                    pubdate_elem = root.find('.//PubDate')
-                    if pubdate_elem is not None:
-                        year = pubdate_elem.findtext('Year', default='')
-                        month = pubdate_elem.findtext('Month', default='')
-                        day = pubdate_elem.findtext('Day', default='')
-                        published = f"{year}-{month}-{day}".strip('-')
-                    if not published:
-                        # fallback to ArticleDate
-                        artdate_elem = root.find('.//ArticleDate')
-                        if artdate_elem is not None:
-                            year = artdate_elem.findtext('Year', default='')
-                            month = artdate_elem.findtext('Month', default='')
-                            day = artdate_elem.findtext('Day', default='')
+                        title_elem = article.find('.//article-title')
+                        if title_elem is not None:
+                            title = "".join(title_elem.itertext()).strip()
+                        abstract_elem = article.find('.//abstract')
+                        if abstract_elem is not None:
+                            summary = "".join(abstract_elem.itertext()).strip()
+                        for contrib in article.findall('.//contrib[@contrib-type="author"]'):
+                            name_elem = contrib.find('name')
+                            if name_elem is not None:
+                                surname = name_elem.findtext('surname', default='')
+                                given_names = name_elem.findtext('given-names', default='')
+                                full = f"{given_names} {surname}".strip()
+                                if full:
+                                    authors.append(full)
+                        pubdate_elem = article.find('.//pub-date')
+                        if pubdate_elem is not None:
+                            year = pubdate_elem.findtext('year', default='')
+                            month = pubdate_elem.findtext('month', default='')
+                            day = pubdate_elem.findtext('day', default='')
                             published = f"{year}-{month}-{day}".strip('-')
-                    link = f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/"
+                    link = f"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC{pmcid}/"
                     metadata = {
                         "title": title,
                         "authors": authors,
@@ -127,37 +115,24 @@ def fetch_pubmed(query: str, max_results: int = 10, start: int = 0) -> int:
                         "summary": summary,
                         "link": link
                     }
-                    # Step 3: Download HTML version if available
-                    # Search for full text link in the pubmed html page
-                    pubmed_html_url = f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/"
-                    pubmed_page_response = requests.get(pubmed_html_url)
-                    if pubmed_page_response.status_code != 200:
-                        logger.warning(f"Failed to fetch PubMed page for PMID {pmid}. Status code: {pubmed_page_response.status_code}")
-                        continue
-                    pubmed_page = pubmed_page_response.text
-                    html_url = extract_fulltext_link(pubmed_page)
-                    if not html_url:
-                        logger.info(f"No full text link found for PMID {pmid}. Skipping download.")
-                        continue
-                    response_status = download_paper(html_url, f"{filename_base}.html")
-                    if response_status:
-                        logger.info(f"Downloaded and saved PubMed article {filename_base}")
-                        save_metadata_as_json(metadata, f"{filename_base}.json")
-                    else:
-                        logger.warning(f"Failed to download full text for PMID {pmid}.")
+                    # Save full text XML from efetch
+                    with open(f"{filename_base}.xml", 'wb') as f:
+                        f.write(fetch_response.content)
+                    logger.info(f"Downloaded and saved PMC article {filename_base}")
+                    save_metadata_as_json(metadata, f"{filename_base}.json")
                     logger.info(f"Waiting for {time_to_next_request} seconds to respect rate limiting...")
                     time.sleep(time_to_next_request)
                 else:
-                    logger.warning(f"Failed to fetch metadata for PMID {pmid}. Status code: {fetch_response.status_code}")
+                    logger.warning(f"Failed to fetch metadata/fulltext for PMC ID {pmcid}. Status code: {fetch_response.status_code}")
             else:
                 if exists_paper(f"{filename_base}.json"):
                     logger.info(f"Paper {filename_base} already exists. Skipping download.")
                 if in_cache(f"{filename_base}.cache"):
                     logger.info(f"Paper {filename_base} is in cache. Skipping download.")
     else:
-        logger.error(f"Error fetching data from PubMed: {search_response.status_code}")
+        logger.error(f"Error fetching data from PMC: {search_response.status_code}")
         logger.error(search_response.text)
-    logger.info("Finished processing current batch from PubMed.")
+    logger.info("Finished processing current batch from PMC.")
     logger.info(f"Waiting for {time_to_next_request} seconds to respect rate limiting...")
     time.sleep(time_to_next_request)
     return entry_count
@@ -181,11 +156,11 @@ def fetch(query: str, total_amount: int, max_results: int = 10, start: int = 0):
 
     done = False
     while processed < total and not done:
-        entry_count = fetch_pubmed(query, max_results, processed)
+        entry_count = fetch_pubmed_central(query, max_results, processed)
         logger.info(f"Fetched {processed}+{entry_count} of {total} results.")
         processed += entry_count
         if entry_count == 0:
-            logger.info("No more entries to process from PubMed. Ending fetch.")
+            logger.info("No more entries to process from PMC. Ending fetch.")
             done = True
 
     total_elapsed = time.time() - start_time
