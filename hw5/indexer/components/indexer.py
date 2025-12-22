@@ -28,8 +28,9 @@ class Indexer:
             logger.info(f"Index {self.index_name} does not exist. No deletion performed.")
 
     def index_document(self, document: dict):
-        self.es.index(index=self.index_name, document=document)
+        status = self.es.index(index=self.index_name, document=document)
         logger.info(f"Indexed document: {document.get('title', 'N/A')}")
+        return status
 
     def index_documents_bulk(self, documents: list):
         from elasticsearch import helpers
@@ -40,4 +41,4 @@ class Indexer:
             }
             for doc in documents
         ]
-        helpers.bulk(self.es, actions)
+        return helpers.bulk(self.es, actions, stats_only=True, raise_on_error=False)

@@ -12,6 +12,9 @@ def load_research_papers_data_from_directory(directory_path: str) -> iter:
     for metadata_filename in os.listdir(directory_path):
         if metadata_filename.endswith(".json"):
             filename = metadata_filename.replace(".json", ".html")
+            # Ugly hack, 
+            if directory_path == "pubmed":
+                filename = filename.replace(".html", ".xml")
             metadata_file_path = os.path.join(directory_path, metadata_filename)
             file_path = os.path.join(directory_path, filename)
             with open(metadata_file_path, 'r', encoding='utf-8') as metadata_file:
