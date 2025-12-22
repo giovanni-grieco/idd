@@ -9,7 +9,14 @@ logger = logging.getLogger(__name__)
 
 source_folder_name = "pubmed"
 cache_folder_name = "cache"
-time_to_next_request = 3  # seconds
+time_to_next_request = 0.12  # seconds
+api_key = os.getenv("NCBI_API_KEY", "")
+if api_key:
+    logger.info("Using NCBI API key for requests.")
+else:
+    logger.info("No NCBI API key found. Requests will be limited to 3 per second.")
+    time_to_next_request = 0.34  # seconds
+
 
 def _format_seconds(sec: float) -> str:
     sec = max(0, int(sec))
@@ -42,7 +49,7 @@ def exists_paper(filename: str) -> bool:
 
 def download_pmc_xml(pmcid: str, filename: str) -> bool:
     # Download full text XML from PMC using efetch
-    url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml"
+    url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml&api_key={api_key}"
     response = requests.get(url)
     if response.status_code == 200 and response.content.strip():
         with open(filename, 'wb') as f:
@@ -56,7 +63,7 @@ def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0) -> i
     # Step 1: Search PMC for article IDs (only open access, full text)
     search_url = (
         f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pmc&term={query}"
-        f"&retstart={start}&retmax={max_results}&retmode=json"
+        f"&retstart={start}&retmax={max_results}&retmode=json&api_key={api_key}"
     )
     logger.info(f"Fetching PMC search URL: {search_url}")
     search_response = requests.get(search_url)
