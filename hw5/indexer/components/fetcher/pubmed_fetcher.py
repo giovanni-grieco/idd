@@ -7,10 +7,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-source_folder_name = "pubmed"
+source_folder_name = "output/pubmed"
 cache_folder_name = "cache"
 time_to_next_request = 0.12  # seconds
-api_key = os.getenv("NCBI_API_KEY", "")
+api_key = os.getenv("NCBI_API_KEY", None)
 if api_key:
     logger.info("Using NCBI API key for requests.")
 else:
@@ -34,9 +34,10 @@ def save_metadata_as_json(metadata: dict, filename: str) -> bool:
 
 def in_cache(filename: str) -> bool:
     result = False
-    if not os.path.exists(cache_folder_name):
-        os.makedirs(cache_folder_name)
-    filepath = os.path.join(cache_folder_name, filename)
+    cache_path = os.path.join(source_folder_name, cache_folder_name)
+    if not os.path.exists(cache_path):
+        os.makedirs(cache_path)
+    filepath = os.path.join(cache_path, filename)
     if os.path.exists(filepath):
         result = True
     else:
@@ -45,11 +46,14 @@ def in_cache(filename: str) -> bool:
     return result
 
 def exists_paper(filename: str) -> bool:
-    return os.path.exists(filename)
+    return os.path.exists(os.path.join(source_folder_name, filename))
 
 def download_pmc_xml(pmcid: str, filename: str) -> bool:
     # Download full text XML from PMC using efetch
-    url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml&api_key={api_key}"
+    if api_key:
+        url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml&api_key={api_key}"
+    else:
+        url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml"
     response = requests.get(url)
     if response.status_code == 200 and response.content.strip():
         with open(filename, 'wb') as f:
@@ -61,10 +65,16 @@ def download_pmc_xml(pmcid: str, filename: str) -> bool:
 
 def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0) -> int:
     # Step 1: Search PMC for article IDs (only open access, full text)
-    search_url = (
-        f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pmc&term={query}"
-        f"&retstart={start}&retmax={max_results}&retmode=json&api_key={api_key}"
-    )
+    if api_key:
+        search_url = (
+            f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pmc&term={query}"
+            f"&retstart={start}&retmax={max_results}&retmode=json&api_key={api_key}"
+        )
+    else:
+        search_url = (
+            f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pmc&term={query}"
+            f"&retstart={start}&retmax={max_results}&retmode=json"
+        )
     logger.info(f"Fetching PMC search URL: {search_url}")
     search_response = requests.get(search_url)
     logger.info(f"Response status code: {search_response.status_code}")
@@ -123,10 +133,11 @@ def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0) -> i
                         "link": link
                     }
                     # Save full text XML from efetch
-                    with open(f"{filename_base}.xml", 'wb') as f:
+                    relative_path = os.path.join(source_folder_name, filename_base)
+                    with open(f"{relative_path}.xml", 'wb') as f:
                         f.write(fetch_response.content)
-                    logger.info(f"Downloaded and saved PMC article {filename_base}")
-                    save_metadata_as_json(metadata, f"{filename_base}.json")
+                    logger.info(f"Downloaded and saved PMC article {relative_path}.xml")
+                    save_metadata_as_json(metadata, f"{relative_path}.json")
                     logger.info(f"Waiting for {time_to_next_request} seconds to respect rate limiting...")
                     time.sleep(time_to_next_request)
                 else:
@@ -148,7 +159,6 @@ def fetch(query: str, total_amount: int, max_results: int = 10, start: int = 0):
     # create source folder if not exists
     if not os.path.exists(source_folder_name):
         os.makedirs(source_folder_name)
-    os.chdir(source_folder_name)
 
     total = max(0, int(total_amount))
     if total == 0:

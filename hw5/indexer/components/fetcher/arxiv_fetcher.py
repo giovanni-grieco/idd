@@ -4,11 +4,12 @@ import json
 import os
 import time
 import logging
+import asyncio
 
 
 logger = logging.getLogger(__name__)
 
-source_folder_name = "arxiv"
+source_folder_name = "output/arxiv"
 cache_folder_name = "cache"
 
 time_to_next_request = 3  # seconds
@@ -23,15 +24,17 @@ def _format_seconds(sec: float) -> str:
     return f"{m:d}:{s:02d}"
 
 def save_metadata_as_json(metadata: dict, filename: str) -> bool:
-    with open(filename, 'w') as f:
+    file_relative_path = os.path.join(source_folder_name, filename)
+    with open(file_relative_path, 'w') as f:
         json.dump(metadata, f, indent=4)
     return True
 
 def in_cache(filename: str) -> bool:
     result = False
-    if not os.path.exists(cache_folder_name):
-        os.makedirs(cache_folder_name)
-    filepath = os.path.join(cache_folder_name, filename)
+    cache_path = os.path.join(source_folder_name, cache_folder_name)
+    if not os.path.exists(cache_path):
+        os.makedirs(cache_path)
+    filepath = os.path.join(cache_path, filename)
     if os.path.exists(filepath):
         result = True
     else:
@@ -40,12 +43,13 @@ def in_cache(filename: str) -> bool:
     return result
 
 def exists_paper(filename: str) -> bool:
-    return os.path.exists(filename)
+    return os.path.exists(os.path.join(source_folder_name, filename))
 
 def download_paper(url: str, filename: str) -> bool:
     response = requests.get(url)
+    file_relative_path = os.path.join(source_folder_name, filename)
     if response.status_code == 200:
-        with open(filename, 'wb') as f:
+        with open(file_relative_path, 'wb') as f:
             f.write(response.content)
         return True
     else:
@@ -136,7 +140,6 @@ def fetch(query: str, total_amount: int, max_results: int = 10, start: int = 0):
     # create source folder if not exists
     if not os.path.exists(source_folder_name):
         os.makedirs(source_folder_name)
-    os.chdir(source_folder_name)
 
     total = max(0, int(total_amount))
     if total == 0:
