@@ -27,3 +27,6 @@ ad esempio
 python3 -m fetch
 ```
 
+# Dataset già "fetchato" pronto da scaricare
+[LINK PER IL DOWNLOAD](https://drive.google.com/drive/folders/1K0EJVQv2QM-0WBG_ThRLXxn5HISYGUlb?usp=sharing)
+
