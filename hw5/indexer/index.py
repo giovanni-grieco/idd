@@ -10,9 +10,9 @@ from components.indexer import Indexer
 def main():
     print("Indexing documents...")
     indexer: Indexer = Indexer("research_papers")
-    status = indexer.index_documents_bulk(dataloader.load_research_papers_data_from_directory("arxiv"))
+    status = indexer.index_documents_bulk(dataloader.load_research_papers_data_from_directory("output/arxiv"))
     print(f"Succeeded :{status[0]}, Failed: {status[1]}")
-    status = indexer.index_documents_bulk(dataloader.load_research_papers_data_from_directory("pubmed"))
+    status = indexer.index_documents_bulk(dataloader.load_research_papers_data_from_directory("output/pubmed"))
     print(f"Succeeded :{status[0]}, Failed: {status[1]}")
     indexer = Indexer("figures")
     #indexer.index_documents_bulk(dataloader.load_figures_data_from_directory("figures"))

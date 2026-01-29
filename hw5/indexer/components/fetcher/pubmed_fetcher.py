@@ -1,9 +1,9 @@
-import requests
+import httpx
 import lxml.etree as ET
 import json
 import os
-import time
 import logging
+import asyncio
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,6 @@ if api_key:
 else:
     logger.info("No NCBI API key found. Requests will be limited to 3 per second.")
     time_to_next_request = 0.34  # seconds
-
 
 def _format_seconds(sec: float) -> str:
     sec = max(0, int(sec))
@@ -48,13 +47,12 @@ def in_cache(filename: str) -> bool:
 def exists_paper(filename: str) -> bool:
     return os.path.exists(os.path.join(source_folder_name, filename))
 
-def download_pmc_xml(pmcid: str, filename: str) -> bool:
-    # Download full text XML from PMC using efetch
+async def download_pmc_xml(pmcid: str, filename: str, client: httpx.AsyncClient) -> bool:
     if api_key:
         url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml&api_key={api_key}"
     else:
         url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml"
-    response = requests.get(url)
+    response = await client.get(url)
     if response.status_code == 200 and response.content.strip():
         with open(filename, 'wb') as f:
             f.write(response.content)
@@ -63,8 +61,7 @@ def download_pmc_xml(pmcid: str, filename: str) -> bool:
         logger.warning(f"Failed to download PMC XML for {pmcid}. Status code: {response.status_code}. Skipping...")
         return False
 
-def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0) -> int:
-    # Step 1: Search PMC for article IDs (only open access, full text)
+async def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0, client: httpx.AsyncClient = None) -> int:
     if api_key:
         search_url = (
             f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pmc&term={query}"
@@ -76,10 +73,10 @@ def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0) -> i
             f"&retstart={start}&retmax={max_results}&retmode=json"
         )
     logger.info(f"Fetching PMC search URL: {search_url}")
-    search_response = requests.get(search_url)
+    search_response = await client.get(search_url)
     logger.info(f"Response status code: {search_response.status_code}")
     logger.info(f"Waiting for {time_to_next_request} seconds to respect rate limiting...")
-    time.sleep(time_to_next_request)
+    await asyncio.sleep(time_to_next_request)
     entry_count = 0
     if search_response.status_code == 200:
         search_data = search_response.json()
@@ -91,11 +88,10 @@ def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0) -> i
         for pmcid in id_list:
             filename_base = pmcid
             if not exists_paper(f"{filename_base}.json") and not in_cache(f"{filename_base}.cache"):
-                # Step 2: Fetch article metadata and full text XML
                 fetch_url = (
                     f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml"
                 )
-                fetch_response = requests.get(fetch_url)
+                fetch_response = await client.get(fetch_url)
                 if fetch_response.status_code == 200 and fetch_response.content.strip():
                     root = ET.fromstring(fetch_response.content)
                     article = root.find('.//article')
@@ -132,14 +128,13 @@ def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0) -> i
                         "summary": summary,
                         "link": link
                     }
-                    # Save full text XML from efetch
                     relative_path = os.path.join(source_folder_name, filename_base)
                     with open(f"{relative_path}.xml", 'wb') as f:
                         f.write(fetch_response.content)
                     logger.info(f"Downloaded and saved PMC article {relative_path}.xml")
                     save_metadata_as_json(metadata, f"{relative_path}.json")
                     logger.info(f"Waiting for {time_to_next_request} seconds to respect rate limiting...")
-                    time.sleep(time_to_next_request)
+                    await asyncio.sleep(time_to_next_request)
                 else:
                     logger.warning(f"Failed to fetch metadata/fulltext for PMC ID {pmcid}. Status code: {fetch_response.status_code}")
             else:
@@ -147,16 +142,16 @@ def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0) -> i
                     logger.info(f"Paper {filename_base} already exists. Skipping download.")
                 if in_cache(f"{filename_base}.cache"):
                     logger.info(f"Paper {filename_base} is in cache. Skipping download.")
+                await asyncio.sleep(0) # yield control to event loop
     else:
         logger.error(f"Error fetching data from PMC: {search_response.status_code}")
         logger.error(search_response.text)
     logger.info("Finished processing current batch from PMC.")
     logger.info(f"Waiting for {time_to_next_request} seconds to respect rate limiting...")
-    time.sleep(time_to_next_request)
+    await asyncio.sleep(time_to_next_request)
     return entry_count
 
-def fetch(query: str, total_amount: int, max_results: int = 10, start: int = 0):
-    # create source folder if not exists
+async def fetch(query: str, total_amount: int, max_results: int = 10, start: int = 0):
     if not os.path.exists(source_folder_name):
         os.makedirs(source_folder_name)
 
@@ -169,17 +164,17 @@ def fetch(query: str, total_amount: int, max_results: int = 10, start: int = 0):
         max_results = total
 
     processed = start
-    start_time = time.time()
+    start_time = asyncio.get_event_loop().time()
 
     done = False
-    while processed < total and not done:
-        entry_count = fetch_pubmed_central(query, max_results, processed)
-        logger.info(f"Fetched {processed}+{entry_count} of {total} results.")
-        processed += entry_count
-        if entry_count == 0:
-            logger.info("No more entries to process from PMC. Ending fetch.")
-            done = True
+    async with httpx.AsyncClient() as client:
+        while processed < total and not done:
+            entry_count = await fetch_pubmed_central(query, max_results, processed, client)
+            logger.info(f"Fetched {processed}+{entry_count} of {total} results.")
+            processed += entry_count
+            if entry_count == 0:
+                logger.info("No more entries to process from PMC. Ending fetch.")
+                done = True
 
-    total_elapsed = time.time() - start_time
+    total_elapsed = asyncio.get_event_loop().time() - start_time
     logger.info(f"Completed fetch of {total} items in {_format_seconds(total_elapsed)}.")
-    os.chdir("..")

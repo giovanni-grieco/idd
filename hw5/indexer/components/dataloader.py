@@ -13,7 +13,7 @@ def load_research_papers_data_from_directory(directory_path: str) -> iter:
         if metadata_filename.endswith(".json"):
             filename = metadata_filename.replace(".json", ".html")
             # Ugly hack, 
-            if directory_path == "pubmed":
+            if directory_path == "output/pubmed":
                 filename = filename.replace(".html", ".xml")
             metadata_file_path = os.path.join(directory_path, metadata_filename)
             file_path = os.path.join(directory_path, filename)
