@@ -63,7 +63,7 @@ Inoltre, gli HTML delle figure hanno anche un ID univoco che specificano in qual
 
 Inoltre all'interno c'è il tag ```<figcaption>...</figcaption>``` che delinea la caption della tabella in questo caso.
 ### Rilevazione di citazioni relative a tabelle e figure dentro ai paragrafi
-TBD
+Si utilizza ```<a class="ltx_ref" ...``` per citare cose all'interno dei paragrafi. Quindi estratte le figure, si capisce 
 
 ## PubMed
 TBD
