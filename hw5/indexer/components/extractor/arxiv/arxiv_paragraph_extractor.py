@@ -13,7 +13,7 @@ def extract_paragraphs_from_html(html_content: str, paper_id: str) -> list[Parag
     # extract all paragraph with class ltx_p
     para_tags = soup.find_all('p', class_='ltx_p')
     for tag in para_tags:
-        paragraph_text = tag.get_text().strip()
+        paragraph_text = tag.decode_contents().strip()
         paragraph_id = tag.get('id', 'unknown_id')
         paragraphs.append(Paragraph(paper_id, paragraph_id, paragraph_text))
     return paragraphs
