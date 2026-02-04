@@ -7,6 +7,7 @@ In questa cartella ci sono tutti gli strumenti per scaricare i dati, elaborarli 
 - Create Index
 - Index
 - Extract
+- Link
 - Delete Index (quando non serve più).
 
 # Moduli disponibili
@@ -14,6 +15,7 @@ In questa cartella ci sono tutti gli strumenti per scaricare i dati, elaborarli 
 - create_index
 - index
 - extract
+- link
 - delete_index
 
 # Come lanciare gli script?
