@@ -19,9 +19,10 @@ def main():
                              arxiv_tables_extractor.extract_table_from_html)
     print("arxiv extraction completed.")
     common_extractor.extract("output/pubmed", 
-                             pubmed_para_extractor.extract_paragraphs_from_html, 
-                             pubmed_figures_extractor.extract_figures_from_html, 
-                             pubmed_tables_extractor.extract_tables_from_html)
+                             pubmed_para_extractor.extract_paragraphs_from_xml, 
+                             pubmed_figures_extractor.extract_figures_from_xml, 
+                             pubmed_tables_extractor.extract_tables_from_xml)
+    print("pubmed extraction completed.")
     print("Paragraph extraction completed.")
 
 if __name__ == "__main__":
