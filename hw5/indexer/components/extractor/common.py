@@ -3,13 +3,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 import os
-from domain.paragraph import Paragraph
 
 def collect_files(data_path: str) -> list[str]:
     output = []
     if os.path.exists(data_path):
         for f in os.listdir(data_path):
-            if f.endswith('.html') :
+            if f.endswith('.html') : #Non universale, perchè pubmed usa .xml
                 logger.info(f"Found: {os.path.join(data_path, f)}")
                 output.append(os.path.join(data_path, f).replace(".html", ""))
     logger.info(f"Total files collected: {len(output)}")

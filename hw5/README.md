@@ -66,8 +66,20 @@ Inoltre all'interno c'è il tag ```<figcaption>...</figcaption>``` che delinea l
 Si utilizza ```<a class="ltx_ref" ...``` per citare cose all'interno dei paragrafi. Quindi estratte le figure, si capisce 
 
 ## PubMed
-TBD
 ### Tabelle
+per le tabelle si può fare utilizzo di ```<table-wrap>``` con relativo id.
+
+All'interno troveremo ```<label>, <caption>, <table>``` che contiene i dati effettivi
 ### Paragrafi
+Per i paragrafi abbiamo ```<p>```
+
+All'interno del paragrafo la citazione avviene 
 ### Figure
+Per le figure si sfrutta il tag in xml ```<fig>``` con relativo id.
+
+Nel fig abbiamo anche ```<caption>``` che contiene ciò che ci interessa
 ### Rilevazione di citazioni relative a tabelle e figure dentro ai paragrafi
+
+# Requisiti
+- Python 3.14
+- Dipendenze in requirements.txt

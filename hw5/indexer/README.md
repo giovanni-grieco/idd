@@ -6,12 +6,14 @@ In questa cartella ci sono tutti gli strumenti per scaricare i dati, elaborarli 
 - Fetch
 - Create Index
 - Index
+- Extract
 - Delete Index (quando non serve più).
 
 # Moduli disponibili
 - fetch 
 - create_index
 - index
+- extract
 - delete_index
 
 # Come lanciare gli script?
