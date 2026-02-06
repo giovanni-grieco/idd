@@ -14,7 +14,7 @@ def extract_paragraphs_from_xml(xml_content: str, paper_id: str) -> list[Paragra
     tags = soup.find_all('p')
     
     for i, tag in enumerate(tags):
-        text = tag.get_text().strip()
+        text = tag.decode_contents().strip()
         para_id = f"{paper_id}_para_{i+1}"
         if text:
             paragraphs.append(Paragraph(paper_id, para_id, text))

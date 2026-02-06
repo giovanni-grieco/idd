@@ -2,9 +2,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from domain.figure import Figure
-from domain.table import Table
-
 import bs4
 
 
