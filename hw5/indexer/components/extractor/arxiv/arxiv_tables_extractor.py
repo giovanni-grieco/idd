@@ -20,4 +20,15 @@ def extract_table_from_html(html_content: str, paper_id: str) -> list[Table]:
             data = str(data_tag)
             table_id = table_tag.get('id', 'unknown_id')
             tables.append(Table(paper_id, table_id, caption_text, data))
+
+
+    table_tags = soup.find_all("figure", class_='ltx_table')
+    for table_tag in table_tags:
+        caption_tag = table_tag.find('figcaption', class_='ltx_caption')
+        data_tag = table_tag.find('table')
+        if caption_tag and data_tag:
+            caption_text = caption_tag.decode_contents().strip()
+            data = str(data_tag)
+            table_id = table_tag.get('id', 'unknown_id')
+            tables.append(Table(paper_id, table_id, caption_text, data))
     return tables
