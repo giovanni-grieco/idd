@@ -1,4 +1,4 @@
-import hw5.indexer.components.html_cleaner as html_cleaner
+import components.html_cleaner as html_cleaner
 
 def test_clean_html():
     raw_html = "<html><body><h1>Title</h1><p>This is a <b>bold</b> paragraph.</p></body></html>"
