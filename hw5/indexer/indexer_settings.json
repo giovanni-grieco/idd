@@ -35,7 +35,8 @@
                 "figure_id": {"type": "keyword"},
                 "caption": {"type": "text", "analyzer": "standard"},
                 "paper_id": {"type": "keyword"},
-                "image_url": {"type": "keyword"}
+                "image_url": {"type": "keyword"},
+                "blob_data": {"type": "text", "analyzer": "standard"}
             }
         }
     },
@@ -54,7 +55,8 @@
                 "table_id": {"type": "keyword"},
                 "description": {"type": "text", "analyzer": "standard"},
                 "paper_id": {"type": "keyword"},
-                "data": {"type": "text", "analyzer": "standard"}
+                "data": {"type": "text", "analyzer": "standard"},
+                "blob_data": {"type": "text", "analyzer": "standard"}
             }
         }
     }

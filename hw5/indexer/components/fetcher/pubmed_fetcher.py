@@ -117,9 +117,7 @@ async def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0
                         pubdate_elem = article.find('.//pub-date')
                         if pubdate_elem is not None:
                             year = pubdate_elem.findtext('year', default='')
-                            month = pubdate_elem.findtext('month', default='')
-                            day = pubdate_elem.findtext('day', default='')
-                            published = f"{year}-{month}-{day}".strip('-')
+                            published = f"{year}"
                     link = f"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC{pmcid}/"
                     metadata = {
                         "title": title,
