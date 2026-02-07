@@ -41,7 +41,7 @@ def extract_tables(file: str, data_path: str, extract_tables_from_html: function
     with open(filepath, 'r') as f:
             paper = f.read()
             extracted_tables = extract_tables_from_html(paper, file.replace(data_path + "/", ""))
-            tables = [{'paper_id':table.paper_id, 'table_id': table.table_id, 'caption': table.caption, 'data': table.data} for table in extracted_tables]
+            tables = [{'paper_id':table.paper_id, 'table_id': table.table_id, 'caption': table.caption,'table_url':table.table_url ,'data': table.data} for table in extracted_tables]
             with open(output_filepath, 'w') as out_f:
                 import json
                 json.dump(tables, out_f, indent=4)

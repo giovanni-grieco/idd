@@ -18,7 +18,7 @@ def extract_figures_from_xml(xml_content: str, paper_id: str) -> list[Figure]:
         
         # Images in JATS are usually in <graphic> tags with xlink:href
         graphic_tag = fig.find('graphic')
-        image_url = graphic_tag.get('xlink:href') if graphic_tag else ""
+        image_url = f"https://pmc.ncbi.nlm.nih.gov/articles/{paper_id}/#{figure_id}"
         
         figures.append(Figure(paper_id, figure_id, caption_text, image_url))
         

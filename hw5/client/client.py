@@ -14,7 +14,7 @@ es = Elasticsearch("http://localhost:9200")
 
 index_options = ["research_papers","figures","tables"]
 
-def parse_query(user_query):
+def parse_query(user_query, index_name):
     # Date range: published:>2020, published:>=2021-03, published:<2022-01-15, etc.
     date_range = re.search(r'published\s*:\s*([<>]=|[<>]|=)\s*([\d\-]+)', user_query)
     if date_range:
@@ -79,25 +79,45 @@ def parse_query(user_query):
         return {"match": {field: value}}
     else:
         # Default: search all fields
-        return {"multi_match": {"query": user_query, "fields": ["title", "authors", "summary", "content"]}}
+        fields = ["title", "authors", "summary", "content"]
+        if index_name == "figures":
+            fields = ["caption", "blob_data"]
+        elif index_name == "tables":
+            fields = ["description", "data", "blob_data"]
+            
+        return {"multi_match": {"query": user_query, "fields": fields}}
 
 def search():
     query = entry.get()
     if not query:
         return
+    current_index = selected_index.get()
     result_box.config(state=tk.NORMAL)
     result_box.delete(1.0, tk.END)
     try:
-        es_query = parse_query(query)
-        res = es.search(index=selected_index.get(), query=es_query)
+        es_query = parse_query(query, current_index)
+        res = es.search(index=current_index, query=es_query)
         hits = res['hits']['hits']
         if not hits:
             result_box.insert(tk.END, "No results found.\n")
         for i, hit in enumerate(hits):
-            result_box.insert(tk.END, f"Title: {hit['_source'].get('title', 'N/A')}\n")
-            result_box.insert(tk.END, f"Authors: {', '.join(hit['_source'].get('authors', []))}\n")
-            result_box.insert(tk.END, f"Published: {hit['_source'].get('published', 'N/A')}\n")
-            link = hit['_source'].get('link', 'N/A')
+            source = hit['_source']
+            link = 'N/A'
+            
+            if current_index == "figures":
+                result_box.insert(tk.END, f"Figure ID: {source.get('figure_id', 'N/A')}\n")
+                result_box.insert(tk.END, f"Caption: {source.get('caption', 'N/A')}\n")
+                link = source.get('image_url', 'N/A')
+            elif current_index == "tables":
+                result_box.insert(tk.END, f"Table ID: {source.get('table_id', 'N/A')}\n")
+                result_box.insert(tk.END, f"Description: {source.get('description', 'N/A')}\n")
+            else:
+                # Default research papers
+                result_box.insert(tk.END, f"Title: {source.get('title', 'N/A')}\n")
+                result_box.insert(tk.END, f"Authors: {', '.join(source.get('authors', []))}\n")
+                result_box.insert(tk.END, f"Published: {source.get('published', 'N/A')}\n")
+                link = source.get('link', 'N/A')
+
             if link != 'N/A':
                 start = result_box.index(tk.END)
                 result_box.insert(tk.END, f"Link: {link}\n\n")

@@ -19,7 +19,8 @@ def extract_table_from_html(html_content: str, paper_id: str) -> list[Table]:
             caption_text = caption_tag.decode_contents().strip()
             data = str(data_tag)
             table_id = table_tag.get('id', 'unknown_id')
-            tables.append(Table(paper_id, table_id, caption_text, data))
+            table_url = f"https://arxiv.org/html/{paper_id}#{table_id}"
+            tables.append(Table(paper_id, table_id, caption_text, table_url, data))
 
 
     table_tags = soup.find_all("figure", class_='ltx_table')
@@ -30,5 +31,6 @@ def extract_table_from_html(html_content: str, paper_id: str) -> list[Table]:
             caption_text = caption_tag.decode_contents().strip()
             data = str(data_tag)
             table_id = table_tag.get('id', 'unknown_id')
-            tables.append(Table(paper_id, table_id, caption_text, data))
+            table_url = f"https://arxiv.org/html/{paper_id}#{table_id}"
+            tables.append(Table(paper_id, table_id, caption_text, table_url , data))
     return tables
