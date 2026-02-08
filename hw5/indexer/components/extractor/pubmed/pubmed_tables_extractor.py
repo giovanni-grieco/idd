@@ -12,7 +12,7 @@ def extract_tables_from_xml(xml_content: str, paper_id: str) -> list[Table]:
     # PubMed uses table-wrap for floating tables
     table_wraps = soup.find_all('table-wrap')
     for wrap in table_wraps:
-        table_id = wrap.get('id', 'unknown_id')
+        table_id = wrap.get('id')
         
         caption_tag = wrap.find('caption')
         caption_text = caption_tag.get_text().strip() if caption_tag else ""
@@ -21,17 +21,8 @@ def extract_tables_from_xml(xml_content: str, paper_id: str) -> list[Table]:
         data_tag = wrap.find('table') 
         data_content = str(data_tag) if data_tag else ""
         
-        tables.append(Table(paper_id, table_id, caption_text,None,data_content))
-    
-    table = soup.find_all('table')
-    for table_tag in table:
-        table_id = table_tag.get('id', 'unknown_id')
-        
-        caption_tag = table_tag.find('caption')
-        caption_text = caption_tag.get_text().strip() if caption_tag else ""
-        
-        data_content = str(table_tag)
         table_url = f"https://pmc.ncbi.nlm.nih.gov/articles/{paper_id}/#{table_id}"
+
         tables.append(Table(paper_id, table_id, caption_text, table_url, data_content))
 
     return tables
