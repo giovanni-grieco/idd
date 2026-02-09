@@ -1,68 +1,23 @@
 {
-    "research_papers":[
-        {
-            "query_id": "Q1",
-            "query" : "SQL"
-        },
-        {
-            "query_id": "Q2",
-            "query" : "neural networks"
-        },
-        {
-            "query_id": "Q3",
-            "query" : "climate change"
-        },
-        {
-            "query_id": "Q4",
-            "query": "Cancer F1 Score"
-        },
-        {
-            "query_id": "Q5",
-            "query": "glyphosate"
-        }
-    ],
-    "tables":[
-        {
-            "query_id": "Q1",
-            "query" : "SQL"
-        },
-        {
-            "query_id": "Q2",
-            "query" : "neural networks"
-        },
-        {
-            "query_id": "Q3",
-            "query" : "climate change"
-        },
-        {
-            "query_id": "Q4",
-            "query": "Cancer F1 Score"
-        },
-        {
-            "query_id": "Q5",
-            "query": "glyphosate"
-        }
-    ],
-    "figures":[
-        {
-            "query_id": "Q1",
-            "query" : "SQL"
-        },
-        {
-            "query_id": "Q2",
-            "query" : "neural networks"
-        },
-        {
-            "query_id": "Q3",
-            "query" : "climate change"
-        },
-        {
-            "query_id": "Q4",
-            "query": "Cancer F1 Score"
-        },
-        {
-            "query_id": "Q5",
-            "query": "glyphosate"   
-        }
-    ]
+  "research_papers": [
+    {"id": "RP1", "index": "research_papers", "query": "text-to-SQL models: recent methods and benchmarks"},
+    {"id": "RP2", "index": "research_papers", "query": "Natural language to SQL: datasets, evaluation, and challenges"},
+    {"id": "RP3", "index": "research_papers", "query": "glyphosate exposure AND cancer risk epidemiology meta-analysis"},
+    {"id": "RP4", "index": "research_papers", "query": "machine learning models for cancer prediction F1 score comparison"},
+    {"id": "RP5", "index": "research_papers", "query": "climate change impact models and attribution studies"}
+  ],
+  "tables": [
+    {"id": "T1", "index": "tables", "query": "SQL schema examples and example query results tables"},
+    {"id": "T2", "index": "tables", "query": "neural network benchmark tables: accuracy, F1, precision"},
+    {"id": "T3", "index": "tables", "query": "climate change statistics tables: temperature, sea level"},
+    {"id": "T4", "index": "tables", "query": "cancer prediction model metrics table F1 precision recall"},
+    {"id": "T5", "index": "tables", "query": "glyphosate assay results table exposure dose response"}
+  ],
+  "figures": [
+    {"id": "F1", "index": "figures", "query": "visualizations of text-to-SQL architecture or pipeline"},
+    {"id": "F2", "index": "figures", "query": "neural network training curves and confusion matrices"},
+    {"id": "F3", "index": "figures", "query": "climate change maps and trend plots"},
+    {"id": "F4", "index": "figures", "query": "ROC and PR curves for cancer prediction models"},
+    {"id": "F5", "index": "figures", "query": "glyphosate exposure dose–response charts"}
+  ]
 }

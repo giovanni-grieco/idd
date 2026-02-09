@@ -8,24 +8,30 @@ import os
 
 ES_HOST = os.getenv("ES_HOST", "http://localhost:9200")
 ANNOTATIONS_PATH = os.path.join(os.path.dirname(__file__), "annotations.jsonl")
+DEFAULT_QUERIES_PATH = os.path.join(os.path.dirname(__file__), "queries.json")
 
 es = Elasticsearch(ES_HOST)
 
 def run_queries(queries: List[Dict[str, Any]], top_k: int = 10):
     for q in queries:
-        qid = q.get("id", q.get("query", str(time.time())))
+        qid = q.get("id") or q.get("query_id") or q.get("query") or str(int(time.time()))
         index = q.get("index")
-        body = q.get("query_body") or {"query": {"multi_match": {"query": q["query"], "fields": ["title", "summary", "content"]}}}
+        # prepare query parameter for modern elasticsearch-py usage (avoid deprecated `body` param)
+        if q.get("query_body") and isinstance(q.get("query_body"), dict) and "query" in q.get("query_body"):
+            query_param = q.get("query_body")["query"]
+        else:
+            query_param = {"multi_match": {"query": q.get("query"), "fields": ["title", "summary", "content"]}}
+
         print(f"\nQuery {qid} on index={index}: {q.get('query')}\n")
-        res = es.search(index=index, body=body, size=top_k)
+        res = es.search(index=index, query=query_param, size=top_k)
         hits = res.get("hits", {}).get("hits", [])
         for rank, h in enumerate(hits, start=1):
             src = h.get("_source", {})
             title = src.get("title") or src.get("caption") or src.get("paper_id") or h.get("_id")
-            snippet = src.get("summary") or src.get("content", "")[:100]
+            snippet = src.get("summary") or src.get("content", "")[:200]
             url = src.get("link") or src.get("image_url") or src.get("table_url") or "N/A"
             print(f"[{rank}] id={h.get('_id')} score={h.get('_score')}\n  Title: {title}\n  Snippet: {snippet}\n  URL: {url}\n")
-            ans = input("Relevant? (y/n/s=skip, q=quit): ").strip().lower()
+            ans = input("Relevant? (y/n, s=skip, q=quit): ").strip().lower()
             if ans == "q":
                 print("Quitting and saving...")
                 return
@@ -55,9 +61,47 @@ def load_annotations() -> Dict[str, List[int]]:
     with open(ANNOTATIONS_PATH, "r", encoding="utf-8") as f:
         for line in f:
             a = json.loads(line)
-            qid = a["query_id"]
+            qid = a.get("query_id") or a.get("id") or a.get("query")
             by_query.setdefault(qid, []).append(a["relevance"])
     return by_query
+
+
+def load_queries(query_file: str = None) -> List[Dict[str, Any]]:
+    """Load queries from a JSON file. If no file is provided, load default queries.json next to this script.
+    Supports the original grouped format (research_papers/tables/figures) or a flat list.
+    """
+    path = query_file or DEFAULT_QUERIES_PATH
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Queries file not found: {path}")
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    queries: List[Dict[str, Any]] = []
+    if isinstance(data, dict):
+        # handle grouped format
+        for section, items in data.items():
+            if isinstance(items, list):
+                for it in items:
+                    qid = it.get("id") or it.get("query_id") or it.get("query") or f"{section}-{int(time.time())}"
+                    queries.append({
+                        "id": qid,
+                        "index": it.get("index") or section,
+                        "query": it.get("query"),
+                        "query_body": it.get("query_body")
+                    })
+    elif isinstance(data, list):
+        for it in data:
+            qid = it.get("id") or it.get("query_id") or it.get("query") or str(int(time.time()))
+            queries.append({
+                "id": qid,
+                "index": it.get("index"),
+                "query": it.get("query"),
+                "query_body": it.get("query_body")
+            })
+    else:
+        raise ValueError("Unsupported queries.json format")
+
+    return queries
 
 def precision_at_k(rels: List[int], k: int) -> float:
     if len(rels) == 0:
@@ -107,13 +151,10 @@ def compute_metrics(k: int = 10):
 
 def main(query_file: str = None, top_k: int = 10):
     if query_file:
-        with open(query_file, "r", encoding="utf-8") as f:
-            queries = json.load(f)
+        queries = load_queries(query_file)
     else:
-        # example interactive single query
-        q = input("Enter query text: ").strip()
-        idx = input("Index name: ").strip()
-        queries = [{"id": str(int(time.time())), "index": idx, "query": q}]
+        # load default queries.json automatically
+        queries = load_queries()
     run_queries(queries, top_k)
     compute_metrics(top_k)
 
