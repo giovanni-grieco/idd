@@ -9,22 +9,23 @@ import os
 ES_HOST = os.getenv("ES_HOST", "http://localhost:9200")
 ANNOTATIONS_PATH = os.path.join(os.path.dirname(__file__), "annotations.jsonl")
 DEFAULT_QUERIES_PATH = os.path.join(os.path.dirname(__file__), "queries.json")
-
+FIELDS = {
+    "research_papers": ["title", "authors", "summary", "link", "content"],
+    "figures": ["figure_id", "caption", "paper_id", "image_url", "blob_data"],
+    "tables": ["table_id", "description", "paper_id", "data", "table_url", "blob_data"]
+}
 es = Elasticsearch(ES_HOST)
 
 def run_queries(queries: List[Dict[str, Any]], top_k: int = 10):
     for q in queries:
         qid = q.get("id") or q.get("query_id") or q.get("query") or str(int(time.time()))
         index = q.get("index")
-        # prepare query parameter for modern elasticsearch-py usage (avoid deprecated `body` param)
-        if q.get("query_body") and isinstance(q.get("query_body"), dict) and "query" in q.get("query_body"):
-            query_param = q.get("query_body")["query"]
-        else:
-            query_param = {"multi_match": {"query": q.get("query"), "fields": ["title", "summary", "content"]}}
+        query_param = {"multi_match": {"query": q.get("query"), "fields": FIELDS.get(index, ["title", "summary", "content"])}}
 
         print(f"\nQuery {qid} on index={index}: {q.get('query')}\n")
         res = es.search(index=index, query=query_param, size=top_k)
         hits = res.get("hits", {}).get("hits", [])
+        print(f"hits={len(hits)}\n")
         for rank, h in enumerate(hits, start=1):
             src = h.get("_source", {})
             title = src.get("title") or src.get("caption") or src.get("paper_id") or h.get("_id")
