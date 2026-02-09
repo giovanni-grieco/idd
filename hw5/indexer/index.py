@@ -20,7 +20,10 @@ def main():
     status = indexer.index_documents_bulk(dataloader.load_figures_data_from_directory("output/pubmed"))
     print(f"Succeeded :{status[0]}, Failed: {status[1]}")
     indexer = Indexer("tables")
-    #indexer.index_documents_bulk(dataloader.load_tables_data_from_directory("tables"))
+    status = indexer.index_documents_bulk(dataloader.load_tables_data_from_directory("output/arxiv"))
+    print(f"Succeeded :{status[0]}, Failed: {status[1]}")
+    status = indexer.index_documents_bulk(dataloader.load_tables_data_from_directory("output/pubmed"))
+    print(f"Succeeded :{status[0]}, Failed: {status[1]}")
     print("Indexing completed.")
 
 

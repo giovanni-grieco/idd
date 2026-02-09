@@ -53,9 +53,10 @@
         "mappings": {
             "properties": {
                 "table_id": {"type": "keyword"},
-                "description": {"type": "text", "analyzer": "standard"},
+                "caption": {"type": "text", "analyzer": "standard"},
                 "paper_id": {"type": "keyword"},
                 "data": {"type": "text", "analyzer": "standard"},
+                "table_url": {"type": "keyword"},
                 "blob_data": {"type": "text", "analyzer": "standard"}
             }
         }

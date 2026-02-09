@@ -81,9 +81,9 @@ def parse_query(user_query, index_name):
         # Default: search all fields
         fields = ["title", "authors", "summary", "content"]
         if index_name == "figures":
-            fields = ["caption", "blob_data"]
+            fields = ["figure_id", "caption", "paper_id", "image_url", "blob_data"]
         elif index_name == "tables":
-            fields = ["description", "data", "blob_data"]
+            fields = ["table_id", "description", "paper_id", "data", "table_url", "blob_data"]
             
         return {"multi_match": {"query": user_query, "fields": fields}}
 
@@ -97,6 +97,8 @@ def search():
     try:
         es_query = parse_query(query, current_index)
         res = es.search(index=current_index, query=es_query)
+        print(f"Elasticsearch query: {es_query}")
+        #print(f"Elasticsearch response: {res}")
         hits = res['hits']['hits']
         if not hits:
             result_box.insert(tk.END, "No results found.\n")
@@ -110,7 +112,8 @@ def search():
                 link = source.get('image_url', 'N/A')
             elif current_index == "tables":
                 result_box.insert(tk.END, f"Table ID: {source.get('table_id', 'N/A')}\n")
-                result_box.insert(tk.END, f"Description: {source.get('description', 'N/A')}\n")
+                result_box.insert(tk.END, f"Caption: {source.get('caption', 'N/A')}\n")
+                link = source.get('table_url', 'N/A')
             else:
                 # Default research papers
                 result_box.insert(tk.END, f"Title: {source.get('title', 'N/A')}\n")
