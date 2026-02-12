@@ -35,6 +35,7 @@
                 "figure_id": {"type": "keyword"},
                 "caption": {"type": "text", "analyzer": "standard"},
                 "paper_id": {"type": "keyword"},
+                "url": {"type": "keyword"},
                 "image_url": {"type": "keyword"},
                 "blob_data": {"type": "text", "analyzer": "standard"}
             }

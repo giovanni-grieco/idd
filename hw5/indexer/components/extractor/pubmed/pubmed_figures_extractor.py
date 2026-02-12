@@ -16,8 +16,8 @@ def extract_figures_from_xml(xml_content: str, paper_id: str) -> list[Figure]:
         caption_tag = fig.find('caption')
         caption_text = caption_tag.get_text().strip() if caption_tag else ""
         
-        image_url = f"https://pmc.ncbi.nlm.nih.gov/articles/{paper_id}/#{figure_id}"
-        
-        figures.append(Figure(paper_id, figure_id, caption_text, image_url))
+        url = f"https://pmc.ncbi.nlm.nih.gov/articles/{paper_id}/#{figure_id}"
+        image_url = fig.find('img').get('src', '') if fig.find('img') else ""
+        figures.append(Figure(paper_id, figure_id, caption_text, url, image_url))
         
     return figures

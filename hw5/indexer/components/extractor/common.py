@@ -27,7 +27,7 @@ def extract_figures(file: str, data_path: str, extract_figures_from_html: functi
     with open(filepath, 'r') as f:
             paper = f.read()
             extracted_figures = extract_figures_from_html(paper, file.replace(data_path + "/", ""))
-            figures = [{'paper_id':fig.paper_id, 'figure_id': fig.figure_id, 'caption': fig.caption, 'image_url': fig.image_url} for fig in extracted_figures]
+            figures = [{'paper_id':fig.paper_id, 'figure_id': fig.figure_id, 'caption': fig.caption, 'url': fig.url , 'image_url': fig.image_url} for fig in extracted_figures]
             with open(output_filepath, 'w') as out_f:
                 import json
                 json.dump(figures, out_f, indent=4)

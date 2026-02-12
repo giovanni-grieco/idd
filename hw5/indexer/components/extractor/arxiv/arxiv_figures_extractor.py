@@ -18,6 +18,8 @@ def extract_figures_from_html(html_content: str, paper_id: str) -> list[Figure]:
         if caption_tag and img_tag:
             caption_text = caption_tag.decode_contents().strip()
             figure_id = figure_tag.get('id', 'unknown_id')
-            image_url = f"https://arxiv.org/html/{paper_id}#{figure_id}"
-            figures.append(Figure(paper_id, figure_id, caption_text, image_url))
+            url = f"https://arxiv.org/html/{paper_id}#{figure_id}"
+            source_url = img_tag.get('src', '')
+            image_url = f"https://arxiv.org/html/{paper_id}/{source_url}"
+            figures.append(Figure(paper_id, figure_id, caption_text, url, image_url))
     return figures
