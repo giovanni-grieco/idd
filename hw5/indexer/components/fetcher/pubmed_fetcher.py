@@ -4,6 +4,9 @@ import json
 import os
 import logging
 import asyncio
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +65,11 @@ async def download_pmc_xml(pmcid: str, filename: str, client: httpx.AsyncClient)
         return False
 
 async def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0, client: httpx.AsyncClient = None) -> int:
+    options = Options()
+    options.add_argument("--headless=new")  # Run Chrome in headless mode
+    driver = webdriver.Chrome(options=options)
+    driver.implicitly_wait(5)  # Wait for the page to load
+    
     if api_key:
         search_url = (
             f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pmc&term={query}"
@@ -92,6 +100,10 @@ async def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0
                     f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml"
                 )
                 fetch_response = await client.get(fetch_url)
+                selenium_url = f"http://pmc.ncbi.nlm.nih.gov/articles/PMC{pmcid}/"
+                driver.get(selenium_url)
+                selenium_response = driver.page_source
+                logger.info(f"Fetched PMC article page for {pmcid} using Selenium. URL: {selenium_url}")
                 if fetch_response.status_code == 200 and fetch_response.content.strip():
                     root = ET.fromstring(fetch_response.content)
                     article = root.find('.//article')
@@ -127,9 +139,9 @@ async def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0
                         "link": link
                     }
                     relative_path = os.path.join(source_folder_name, filename_base)
-                    with open(f"{relative_path}.xml", 'wb') as f:
-                        f.write(fetch_response.content)
-                    logger.info(f"Downloaded and saved PMC article {relative_path}.xml")
+                    with open(f"{relative_path}.html", 'wb') as f:
+                        f.write(selenium_response.encode('utf-8'))
+                    logger.info(f"Downloaded and saved PMC article {relative_path}.html")
                     save_metadata_as_json(metadata, f"{relative_path}.json")
                     logger.info(f"Waiting for {time_to_next_request} seconds to respect rate limiting...")
                     await asyncio.sleep(time_to_next_request)
