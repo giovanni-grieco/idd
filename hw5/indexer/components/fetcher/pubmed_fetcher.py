@@ -50,25 +50,18 @@ def in_cache(filename: str) -> bool:
 def exists_paper(filename: str) -> bool:
     return os.path.exists(os.path.join(source_folder_name, filename))
 
-async def download_pmc_xml(pmcid: str, filename: str, client: httpx.AsyncClient) -> bool:
+#UNUSED
+async def download_pmc_xml(pmcid: str, client: httpx.AsyncClient) -> bool:
     if api_key:
         url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml&api_key={api_key}"
     else:
         url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml"
     response = await client.get(url)
-    if response.status_code == 200 and response.content.strip():
-        with open(filename, 'wb') as f:
-            f.write(response.content)
-        return True
-    else:
-        logger.warning(f"Failed to download PMC XML for {pmcid}. Status code: {response.status_code}. Skipping...")
-        return False
+    logger.info(f"Fetched PMC XML for {pmcid}. URL: {url} Status code: {response.status_code}")
+    return response
 
-async def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0, client: httpx.AsyncClient = None) -> int:
-    options = Options()
-    options.add_argument("--headless=new")  # Run Chrome in headless mode
-    driver = webdriver.Chrome(options=options)
-    driver.implicitly_wait(5)  # Wait for the page to load
+async def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0, client: httpx.AsyncClient = None, driver: webdriver.Chrome = None) -> int:
+      # Wait for the page to load
     
     if api_key:
         search_url = (
@@ -96,10 +89,7 @@ async def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0
         for pmcid in id_list:
             filename_base = pmcid
             if not exists_paper(f"{filename_base}.json") and not in_cache(f"{filename_base}.cache"):
-                fetch_url = (
-                    f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id={pmcid}&retmode=xml"
-                )
-                fetch_response = await client.get(fetch_url)
+                fetch_response = await download_pmc_xml(pmcid, client)
                 selenium_url = f"http://pmc.ncbi.nlm.nih.gov/articles/PMC{pmcid}/"
                 driver.get(selenium_url)
                 selenium_response = driver.page_source
@@ -141,6 +131,8 @@ async def fetch_pubmed_central(query: str, max_results: int = 10, start: int = 0
                     relative_path = os.path.join(source_folder_name, filename_base)
                     with open(f"{relative_path}.html", 'wb') as f:
                         f.write(selenium_response.encode('utf-8'))
+                    with open(f"{relative_path}.xml", 'wb') as f:
+                        f.write(fetch_response.content)
                     logger.info(f"Downloaded and saved PMC article {relative_path}.html")
                     save_metadata_as_json(metadata, f"{relative_path}.json")
                     logger.info(f"Waiting for {time_to_next_request} seconds to respect rate limiting...")
@@ -177,14 +169,19 @@ async def fetch(query: str, total_amount: int, max_results: int = 10, start: int
     start_time = asyncio.get_event_loop().time()
 
     done = False
+
+    options = Options()
+    options.add_argument("--headless=new")  # Run Chrome in headless mode
+    driver = webdriver.Chrome(options=options)
+    driver.implicitly_wait(5)
     async with httpx.AsyncClient() as client:
         while processed < total and not done:
-            entry_count = await fetch_pubmed_central(query, max_results, processed, client)
+            entry_count = await fetch_pubmed_central(query, max_results, processed, client, driver)
             logger.info(f"Fetched {processed}+{entry_count} of {total} results.")
             processed += entry_count
             if entry_count == 0:
                 logger.info("No more entries to process from PMC. Ending fetch.")
                 done = True
-
+    driver.quit()
     total_elapsed = asyncio.get_event_loop().time() - start_time
     logger.info(f"Completed fetch of {total} items in {_format_seconds(total_elapsed)}.")

@@ -19,7 +19,7 @@ async def main():
     # use asyncio to run both fetchers concurrently
     await asyncio.gather(
         arxiv_fetcher.fetch(arxiv_query, total_amount, 1000),
-        pubmed_fetcher.fetch(pubmed_query, total_amount, max_results=30)
+        pubmed_fetcher.fetch(pubmed_query, total_amount, max_results=50)
     )
     print("Fetched research papers from arXiv and PubMed.")
 
