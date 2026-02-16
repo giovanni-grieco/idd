@@ -81,7 +81,7 @@ def parse_query(user_query, index_name):
         # Default: search all fields
         fields = ["title", "authors", "summary", "content"]
         if index_name == "figures":
-            fields = ["figure_id", "caption", "paper_id", "image_url", "blob_data"]
+            fields = ["figure_id", "caption", "paper_id", "url", "blob_data"]
         elif index_name == "tables":
             fields = ["table_id", "description", "paper_id", "data", "table_url", "blob_data"]
             
@@ -109,7 +109,7 @@ def search():
             if current_index == "figures":
                 result_box.insert(tk.END, f"Figure ID: {source.get('figure_id', 'N/A')}\n")
                 result_box.insert(tk.END, f"Caption: {source.get('caption', 'N/A')}\n")
-                link = source.get('image_url', 'N/A')
+                link = source.get('url', 'N/A')
             elif current_index == "tables":
                 result_box.insert(tk.END, f"Table ID: {source.get('table_id', 'N/A')}\n")
                 result_box.insert(tk.END, f"Caption: {source.get('caption', 'N/A')}\n")
