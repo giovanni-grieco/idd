@@ -9,7 +9,7 @@ def published_date_to_year(published_date: str) -> str:
     return "Unknown"
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Metadata Analyzer for Research Papers")
+    parser = argparse.ArgumentParser(description="A metadata collector for research papers that counts the number of papers published each year based on the metadata JSON files.")
     parser.add_argument("--metadata_path", type=str, required=True, help="Path to the folder containing the metadata JSON files for the research papers")
     parser.add_argument("--output", type=str, default="metadata_analysis_results.csv", help="Path to the output CSV file for the analysis results")
     args = parser.parse_args()
