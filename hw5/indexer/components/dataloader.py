@@ -93,6 +93,7 @@ def load_figures_data_from_directory(directory_path: str) -> iter:
                         "figure_id": figure_id,
                         "caption": html_cleaner.clean_html(figure.get("caption")),
                         "paper_id": figure.get("paper_id"),
+                        "url": figure.get("url"),
                         "image_url": figure.get("image_url"),
                         "blob_data": blob_data
                     }

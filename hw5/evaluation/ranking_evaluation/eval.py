@@ -14,7 +14,7 @@ ES_HOST = os.getenv("ES_HOST", "http://localhost:9200")
 DEFAULT_QUERIES_PATH = os.path.join(os.path.dirname(__file__), "queries.json")
 FIELDS = {
     "research_papers": ["title", "authors", "summary", "link", "content"],
-    "figures": ["figure_id", "caption", "paper_id", "image_url", "blob_data"],
+    "figures": ["figure_id", "caption", "paper_id","url", "image_url", "blob_data"],
     "tables": ["table_id", "caption", "paper_id", "data", "table_url", "blob_data"]
 }
 es = Elasticsearch(ES_HOST)
