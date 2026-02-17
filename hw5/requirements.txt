@@ -6,3 +6,4 @@ beautifulsoup4
 httpx
 selenium
 ext_llm
+matplotlib
