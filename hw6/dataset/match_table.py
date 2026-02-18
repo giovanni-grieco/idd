@@ -1,6 +1,20 @@
 import pandas as pd
 import argparse
 import os
+import concurrent.futures
+import time
+
+def worker(chunk_used_cars, chunk_vehicles, output_file, process_id):
+    start_time = time.time()
+    print(f"Process {process_id} started...")
+    match_chunk(chunk_used_cars, chunk_vehicles, output_file)
+    end_time = time.time()
+    print(f"Process {process_id} completed in {end_time - start_time:.2f} seconds.")
+
+def match_chunk(chunk_used_cars, chunk_vehicles, output_file):
+    merged = pd.merge(chunk_used_cars, chunk_vehicles, on="VIN", how="inner", suffixes=('_used_cars', '_vehicles'))
+    if not merged.empty:
+        merged[["row_id_used_cars", "row_id_vehicles"]].to_csv(output_file, mode='a', index=False, header=not os.path.exists(output_file))
 
 if __name__ == "__main__":
 
@@ -14,11 +28,11 @@ if __name__ == "__main__":
     if os.path.exists(args.output):
         os.remove(args.output)
 
-    for chunk_used_cars in pd.read_csv(args.table1, chunksize=1000):
-        for chunk_vehicles in pd.read_csv(args.table2, chunksize=1000):
-            # if VIN coincides, then we have a match and we save the row_ids in a third table
-            merged = pd.merge(chunk_used_cars, chunk_vehicles, on="VIN", how="inner", suffixes=('_used_cars', '_vehicles'))
-            if not merged.empty:
-                merged[["row_id_used_cars", "row_id_vehicles"]].to_csv(
-                    args.output, mode="a", index=False, header=not os.path.exists(args.output)
-                )
+    max_workers = os.cpu_count() or 1
+    #print(f"Using {max_workers} parallel workers for matching.")
+
+    process_id = 0
+    for chunk_used_cars in pd.read_csv(args.table1, chunksize=100000):
+        for chunk_vehicles in pd.read_csv(args.table2, chunksize=100000):
+            worker(chunk_used_cars, chunk_vehicles, args.output, process_id)
+            process_id += 1
