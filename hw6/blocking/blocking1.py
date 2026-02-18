@@ -15,15 +15,11 @@ WORKING_DIR = "blocks1"
 
 
 def get_typo_tolerant_keys(row) -> int:
-    # 1. Clean the data
     brand = str(row.get('Marca', '')).lower().strip()
     model = str(row.get('Modello', '')).lower().strip()
-    year  = str(row.get('Anno', '')).strip()
-    #print(f"Processing brand: {brand}, model: {model}, year: {year}")
     brand_key = jellyfish.soundex(brand)
     model_key = jellyfish.soundex(model)
     key_string = f"{brand_key}_{model_key}"
-    #print(f"Generated key: {key_string}")
     key_hash = hashlib.md5(key_string.encode()).hexdigest()
     return key_hash
 

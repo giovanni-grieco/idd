@@ -25,10 +25,11 @@ def calculate_precision_recall(match_table_file: str, blocks_dir: str, matching_
     print(matching_pairs)
     tp = fp = fn = tn = 0
     block_sub_folders = [os.path.join(blocks_dir, d) for d in os.listdir(blocks_dir) if os.path.isdir(os.path.join(blocks_dir, d))]
+    true_positive_pairs = set()
     for matching_block in matching_blocks_in_both_datasets:
         matching_block_A = os.path.join(block_sub_folders[0], matching_block)
         matching_block_B = os.path.join(block_sub_folders[1], matching_block)
-        print(f"Evaluating block: {matching_block}, Block A: {matching_block_A}, Block B: {matching_block_B}")
+        #print(f"Evaluating block: {matching_block}, Block A: {matching_block_A}, Block B: {matching_block_B}")
         with open(matching_block_A, 'r') as f:
             with open(matching_block_B, 'r') as g:
                 block_A_rows = set(int(line.strip()) for line in f)
@@ -38,10 +39,18 @@ def calculate_precision_recall(match_table_file: str, blocks_dir: str, matching_
                         pair = (row_A, row_B)
                         reversed_pair = (row_B, row_A)
                         #print(f"Evaluating pair: {pair} and reversed pair: {reversed_pair}")
-                        if pair in matching_pairs or reversed_pair in matching_pairs:
-                            print(f"True Positive: {pair} or {reversed_pair} is in matching pairs.")
+                        if (pair in matching_pairs or reversed_pair in matching_pairs) and (pair not in true_positive_pairs or reversed_pair not in true_positive_pairs):
+        
                             tp += 1
-                            print(f"Current TP: {tp}")
+                            #print(f"Current TP: {tp}")
+                            pair_to_print = None
+                            true_positive_pairs.add(pair)
+                            true_positive_pairs.add(reversed_pair)
+                            if pair in matching_pairs:
+                                pair_to_print = pair
+                            else:
+                                pair_to_print = reversed_pair
+                            print(f"True Positive: {pair_to_print} is in matching pairs in {matching_block_A}-{matching_block_B}")
                         else:
                             fp += 1
 

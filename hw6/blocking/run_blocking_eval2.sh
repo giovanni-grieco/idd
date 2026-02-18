@@ -1,0 +1,1 @@
+python3 blocking_evaluator.py ../dataset/match_table_60v6.csv blocks2/
