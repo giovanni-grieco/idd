@@ -3,6 +3,7 @@ from typing import List, Optional, Dict
 import os
 import json
 import argparse
+import csv
 
 
 def load_annotations(annotations_path: str) -> Dict[str, List[int]]:
