@@ -1,0 +1,3 @@
+python3 balance_classes.py
+
+python3 match_table.py -o match_table_balanced.csv balanced_cleaned_used_cars_data.csv balanced_cleaned_vehicles.csv
