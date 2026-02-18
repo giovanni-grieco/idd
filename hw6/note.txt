@@ -1,0 +1,12 @@
+STEP:
+1. entrambi i dataset sono stati allineati secondo lo stesso schema e ripuliti dei valori nulli --> utilizza uno script
+    di preprocessamento (process_dataset.py):
+    1.1. vengono utilizzati dei file json (<datasetA_name>.json e <datasetB_name>.json) per mantenere e rinominare solo gli attributi desiderati
+    1.2. viene aggiunta una colonna row_id (popolato con valori da 0 a len)
+    1.3. al termine vengono generati dei file .csv con i dataset allineati secondo le esigenze (aligned_<datasetA_name>.csv e aligned_<datasetB_name>.csv)
+2. per generare ground truth si è pensato di creare un identificatore univoco per riga che sia corrispondente su A e su B
+    se le due righe sono effettivamente in match --> richiede un O(n·m) di confronti, con m<<<n
+    2.1. uno script (splitter.py) suddivide i dataset in porzioni di dimensione ridotta
+    2.2. un ulteriore scritp (match_table.py) si occupa di effettuare il join tra i dataset A e B allineati
+    2.3. al termine viene generato un file .csv (match_table.csv) contenente row_id_A e row_id_B delle features in match --> nel caso peggiore
+        l'occupazione spaziale è O(m), tutto il dataset di dimensione ridotta è contenuto (matcha) con quello più grande
