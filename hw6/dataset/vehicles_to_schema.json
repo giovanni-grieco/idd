@@ -1,0 +1,17 @@
+{
+    "VIN": "VIN",
+    "manufacturer": "Marca",
+    "model": "Modello",
+    "year": "Anno",
+    "price": "Prezzo",
+    "odometer": "Chilometraggio",
+    "transmission": "Cambio",
+    "fuel": "Tipo carburante",
+    "paint_color": "Colore esterno",
+    "description": "Descrizione",
+    "cylinders": "Cilindri",
+    "drive": "Tipo trazione",
+    "condition": "Condizione",
+    "lat": "Latitudine",
+    "long": "Longitudine"
+}
