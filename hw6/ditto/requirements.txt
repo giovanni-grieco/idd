@@ -4,7 +4,6 @@ regex
 scipy
 sentencepiece
 scikit-learn
-spacy
 torch
 transformers
 tqdm
@@ -17,3 +16,4 @@ wheel
 pandas
 tqdm
 wordfreq
+spacy

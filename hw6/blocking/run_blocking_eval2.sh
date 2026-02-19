@@ -1,1 +1,1 @@
-python3 blocking_evaluator.py ../dataset/match_table_balanced.csv blocks2/
+python3 blocking_evaluator.py ../dataset/match_table_balanced.csv ../dataset/balanced_cleaned_used_cars_data.csv ../dataset/balanced_cleaned_vehicles.csv blocks2/
