@@ -1,10 +1,11 @@
-OUTPUT_PATH="data/fair/Abt-Buy/"
+OUTPUT_PATH="data/used_cars_vehicles/"
 
 python train_ditto.py \
-  --task DA_iTunes-Amazon \
-  --batch_size 64 \
+  --task used_cars_vehicles \
+  --batch_size 32 \
   --run_id 11 \
   --logdir ${OUTPUT_PATH}log \
+  --save_model ${OUTPUT_PATH}model.pt \
   --lm roberta \
   --finetuning \
   --lr 1.5e-5 \

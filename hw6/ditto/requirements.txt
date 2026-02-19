@@ -16,4 +16,6 @@ wheel
 pandas
 tqdm
 wordfreq
+setuptools
+wheel
 spacy
