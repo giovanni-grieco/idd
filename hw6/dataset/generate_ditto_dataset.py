@@ -2,6 +2,7 @@ import os
 import argparse
 import pandas as pd
 import random
+import re
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -138,7 +139,11 @@ if __name__ == "__main__":
             if col in ["label", "row_id_1", "row_id_2"]:
                 continue
             
-            val_str = str(val).strip().replace("\t", " ").replace("\n", " ")
+            # Pulisce il valore da tabulazioni e newline, e collassa spazi multipli
+            val_str = str(val)
+            val_str = re.sub(r'[\t\n\r]+', ' ', val_str).strip()
+            val_str = re.sub(r'\s+', ' ', val_str)
+
             if val_str == "nan" or val_str == "":
                 continue
                 
