@@ -55,11 +55,6 @@ def main():
     parser.add_argument("-e", "--excluded", help="Path to a CSV file with the excluded rows", default="excluded_rows.csv")
     args = parser.parse_args()
 
-    os.makedirs(WORKING_DIR, exist_ok=True)
-    table1_name = os.path.splitext(os.path.basename(args.table1))[0]
-    working_dir = os.path.join(WORKING_DIR, table1_name)
-    os.makedirs(working_dir, exist_ok=True)
-
     # Process first table
     for chunk in pd.read_csv(args.table1, chunksize=100000):
         # Using iterrows allows access by string keys, handling spaces correctly

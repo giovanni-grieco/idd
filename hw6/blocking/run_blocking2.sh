@@ -1,1 +1,1 @@
-python3 blocking2.py ../dataset/shuffled_pairs.csv -o ../dataset/blocked2_shuffled_pairs.csv -e ../dataset/exclude1_shuffled_pairs.csv
+python3 blocking2.py ../dataset/shuffled_pairs.csv -o blocked2_shuffled_pairs.csv -e excluded2_shuffled_pairs.csv
