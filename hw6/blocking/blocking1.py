@@ -1,14 +1,13 @@
-from collections import defaultdict
 import jellyfish
 import argparse
 import os
 import pandas as pd
 import hashlib
-import logging
 
 WORKING_DIR = "blocks1"
 COLUMN_NAMES = []
 SUFFIXES = []
+
 
 def init():
     with open("schema.txt", "r") as f:
@@ -20,7 +19,6 @@ def init():
                 suffix = line.strip()
                 SUFFIXES.append(suffix)
 
-            
 
 def get_typo_tolerant_keys(row) -> str:
     brand = str(row.get('Marca', '')).lower().strip()
@@ -33,37 +31,48 @@ def get_typo_tolerant_keys(row) -> str:
 
 
 def handle_row(row):
-    # A row contains a pair now so we need to calculate the hash for both used_cars and vehicles and if they match
-    # They survive, if they don't, we drop them.
-    first_row = pd.Series({col: getattr(row, f"{col}_used_cars") for col in COLUMN_NAMES})
-    second_row = pd.Series({col: getattr(row, f"{col}_vehicles") for col in COLUMN_NAMES})
+    # row is now a pandas Series, so we can access keys directly with brackets
+    # Create clean series for each entity based on the schema
+    first_row_data = {col: row[f"{col}_used_cars"] for col in COLUMN_NAMES if f"{col}_used_cars" in row}
+    second_row_data = {col: row[f"{col}_vehicles"] for col in COLUMN_NAMES if f"{col}_vehicles" in row}
+
+    first_row = pd.Series(first_row_data)
+    second_row = pd.Series(second_row_data)
+
     first_key = get_typo_tolerant_keys(first_row)
     second_key = get_typo_tolerant_keys(second_row)
+    #print(f"Processed row with keys: {first_key} (used_cars) vs {second_key} (vehicles)")
     if first_key == second_key:
-        return row
-    return None
+        return row, first_key  # Return the key as well for file naming
+    return row, None
+
 
 def main():
     init()
     parser = argparse.ArgumentParser(description="Create blocks based on typo-tolerant keys.")
     parser.add_argument("table1", help="Path to the first aligned CSV file (e.g., aligned_used_cars_data.csv)")
     parser.add_argument("-o", "--output", help="Path to the output csv file", default="blocked_pairs.csv")
+    parser.add_argument("-e", "--excluded", help="Path to a CSV file with the excluded rows", default="excluded_rows.csv")
     args = parser.parse_args()
 
     os.makedirs(WORKING_DIR, exist_ok=True)
-    # create folder named like table1 without extension
     table1_name = os.path.splitext(os.path.basename(args.table1))[0]
     working_dir = os.path.join(WORKING_DIR, table1_name)
     os.makedirs(working_dir, exist_ok=True)
 
     # Process first table
     for chunk in pd.read_csv(args.table1, chunksize=100000):
-        for row in chunk.itertuples(index=False):
-            row = handle_row(row)
-            if row:
-                output_path = os.path.join(working_dir, f"{row.block_id}.csv")
-                row.to_frame().T.to_csv(output_path, mode='a', index=False, header=not os.path.exists(output_path))
+        # Using iterrows allows access by string keys, handling spaces correctly
+        for index, row in chunk.iterrows():
+            processed_row, key = handle_row(row)
+            if key is not None:
+                # Append to the file for that specific block
+                processed_row.to_frame().T.to_csv(args.output, mode='a', index=False,
+                                                  header=not os.path.exists(args.output))
+            else:
+                processed_row.to_frame().T.to_csv(args.excluded, mode='a', index=False,
+                                                  header=not os.path.exists(args.excluded))
+
 
 if __name__ == "__main__":
     main()
-

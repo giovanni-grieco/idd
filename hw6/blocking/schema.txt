@@ -14,3 +14,4 @@ Tipo trazione
 Condizione
 Latitudine
 Longitudine
+row_id

@@ -3,61 +3,59 @@ import pandas as pd
 import random
 import os
 
-
-
 # We will create the pairs to be saved in a CSV with a new column for their match label
 # It will be balanced, using all the positives matches in the match_table and getting the same amount of random negative matches by randomly picking and checking that it's not present in the match_table
 
 def match_chunk(chunk_a, chunk_b):
+    # Ensure indices are reset to avoid merge issues if chunks came from specific weird indexing
+    chunk_a = chunk_a.reset_index(drop=True)
+    chunk_b = chunk_b.reset_index(drop=True)
+
+    # Merge on VIN to find positive matches (assuming VIN is the join key)
     merged = pd.merge(chunk_a, chunk_b, on="VIN", how="inner", suffixes=('_used_cars', '_vehicles'))
+
     if not merged.empty:
         merged["match_label"] = 1
-        # Create explicit columns for both VINs to match negative pair schema
+        # Create explicit columns for both VINs to match negative pair schema later
         merged["VIN_used_cars"] = merged["VIN"]
         merged["VIN_vehicles"] = merged["VIN"]
-        # Drop the common key if you want strictly suffixed columns, or keep it. 
-        # Usually better to drop to avoid ambiguity if downstream expects specific names.
+
+        # Drop the common key because we now have specific suffixed keys
         merged = merged.drop(columns=["VIN"])
     return merged
 
 
 def create_negative_pairs(dataset1_path, dataset2_path, num_pairs):
-    # Get total lines to know range for random sampling
-    # Subtract 1 for header
+    # Get total lines to know range for random sampling (subtract 1 for header)
     n_rows1 = sum(1 for _ in open(dataset1_path)) - 1
     n_rows2 = sum(1 for _ in open(dataset2_path)) - 1
-    
+
     # Generate random indices
-    # We use replacement because collisions are rare and acceptable for negative sampling 
-    # (or we can use random.sample for unique if strictness required, but sample is safer for valid range)
+    if num_pairs > n_rows1: num_pairs = n_rows1
+    if num_pairs > n_rows2: num_pairs = n_rows2
+
     indices1 = sorted(random.sample(range(n_rows1), num_pairs))
     indices2 = sorted(random.sample(range(n_rows2), num_pairs))
-    
-    # Helper to load specific rows
-    # Rows in CSV are 0-indexed (header), 1-indexed (data). 
-    # We want data rows i where i is in indices (0-based relative to data start)
-    # So in file line numbers (0-based): header is 0. Data row k is at line k+1.
+
     def load_rows_by_indices(path, indices):
         target_indices = set(indices)
-        # skiprows: lineno -> bool. 
-        # Line 0 is header (keep, so return False). 
-        # Line k > 0 is data row k-1. We want to KEEP if (k-1) in target_indices.
-        # So skip if (k-1) NOT in target_indices.
         return pd.read_csv(path, skiprows=lambda x: x > 0 and (x - 1) not in target_indices)
-    
+
     print("Loading random rows from dataset 1...")
     df1 = load_rows_by_indices(dataset1_path, indices1)
+
     print("Loading random rows from dataset 2...")
     df2 = load_rows_by_indices(dataset2_path, indices2)
-    
-    # Shuffle to decouple the sorted loading order
+
+    # Shuffle to decouple the sorted loading order so we get random pairings
     df1 = df1.sample(frac=1).reset_index(drop=True)
     df2 = df2.sample(frac=1).reset_index(drop=True)
-    
+
     # Rename ALL columns including VIN
     df1_renamed = df1.rename(columns={c: f"{c}_used_cars" for c in df1.columns})
     df2_renamed = df2.rename(columns={c: f"{c}_vehicles" for c in df2.columns})
 
+    # Concatenate side-by-side.
     candidates = pd.concat([df1_renamed, df2_renamed], axis=1)
 
     # Filter out accidental positive matches (same VIN)
@@ -66,7 +64,8 @@ def create_negative_pairs(dataset1_path, dataset2_path, num_pairs):
     candidates['match_label'] = 0
 
     print(f"Created {len(candidates)} negative pairs")
-    return candidates.to_dict('records')
+    return candidates
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Create pairs of records for matching")
@@ -76,21 +75,41 @@ if __name__ == "__main__":
     parser.add_argument("dataset2", type=str, help="Second dataset CSV file")
     args = parser.parse_args()
 
-    # Load datasets with chunks
-    match_table = pd.read_csv(args.match_table)
-    positive_pairs_amount = len(match_table)
-    print(f"Number of positive pairs: {positive_pairs_amount}")
+    if os.path.exists(args.output):
+        os.remove(args.output)
 
-    
-    for chunk_used_cars in pd.read_csv(args.dataset1, chunksize=100000):
-        for chunk_vehicles in pd.read_csv(args.dataset2, chunksize=100000):
+    pos_count = 0
+    header_written = False
+
+    match_table_df = pd.read_csv(args.match_table)
+    target_negative_count = len(match_table_df)
+
+    # Run the positive pair extraction
+    for chunk_used_cars in pd.read_csv(args.dataset1, chunksize=50000):
+        for chunk_vehicles in pd.read_csv(args.dataset2, chunksize=50000):
             positive_pairs = match_chunk(chunk_used_cars, chunk_vehicles)
-            if not positive_pairs.empty:
-                positive_pairs.to_csv(args.output, mode='a', index=False, header=not os.path.exists(args.output))
-    
-    negative_pairs = create_negative_pairs(args.dataset1, args.dataset2, positive_pairs_amount)
-    # append negative pairs to the same output file
-    pd.DataFrame(negative_pairs).to_csv(args.output, mode='a', index=False, header=not os.path.exists(args.output))
 
-        
-            
+            if not positive_pairs.empty:
+                pos_count += len(positive_pairs)
+                # Write to CSV
+                positive_pairs.to_csv(args.output, mode='a', index=False, header=not os.path.exists(args.output))
+
+    print(f"Written positive pairs. Proceeding to create {target_negative_count} negative pairs...")
+
+    # 2. Process Negative Pairs
+    negative_pairs_df = create_negative_pairs(args.dataset1, args.dataset2, target_negative_count)
+
+    if os.path.exists(args.output):
+        # FIX: Align columns with existing file!
+        # Read the header of the existing file to know the exact order
+        try:
+             existing_columns = pd.read_csv(args.output, nrows=0).columns.tolist()
+             # Reorder negative_pairs_df to match existing schema exactly
+             # This ensures 'match_label' and 'VIN' columns fall into the correct positions
+             negative_pairs_df = negative_pairs_df[existing_columns]
+        except pd.errors.EmptyDataError:
+             # If file was created but empty (no positive pairs found), we leave order as is
+             pass
+
+    # Append negative pairs to the same output file
+    negative_pairs_df.to_csv(args.output, mode='a', index=False, header=not os.path.exists(args.output))
