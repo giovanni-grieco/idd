@@ -1,0 +1,16 @@
+VIN
+Marca
+Modello
+Anno
+Prezzo
+Chilometraggio
+Cambio
+Tipo carburante
+Tipo veicolo
+Colore esterno
+Descrizione
+Cilindri
+Tipo trazione
+Condizione
+Latitudine
+Longitudine
