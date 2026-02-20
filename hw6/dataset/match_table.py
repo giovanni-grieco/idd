@@ -12,7 +12,7 @@ def worker(chunk_used_cars, chunk_vehicles, output_file, process_id):
     print(f"Process {process_id} completed in {end_time - start_time:.2f} seconds.")
 
 def match_chunk(chunk_used_cars, chunk_vehicles, output_file):
-    merged = pd.merge(chunk_used_cars, chunk_vehicles, on="VIN", how="inner", suffixes=('_used_cars', '_vehicles'))
+    merged = pd.merge(chunk_used_cars, chunk_vehicles, on="vin", how="inner", suffixes=('_used_cars', '_vehicles'))
     if not merged.empty:
         merged[["row_id_used_cars", "row_id_vehicles"]].to_csv(output_file, mode='a', index=False, header=not os.path.exists(output_file))
 

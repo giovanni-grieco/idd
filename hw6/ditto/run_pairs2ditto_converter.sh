@@ -1,0 +1,1 @@
+python3 pairs2ditto_converter.py -i shuffled_pairs.csv -o ditto/data/used_cars_data

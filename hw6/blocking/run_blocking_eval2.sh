@@ -1,1 +1,1 @@
-python3 blocking_evaluator.py ../dataset/match_table_balanced.csv ../dataset/balanced_cleaned_used_cars_data.csv ../dataset/balanced_cleaned_vehicles.csv blocks2/
+python3 blocking_evaluator.py -b blocked2_shuffled_pairs.csv -e excluded2_shuffled_pairs.csv > blocking_eval2.txt

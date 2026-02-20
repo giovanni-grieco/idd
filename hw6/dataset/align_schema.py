@@ -10,7 +10,7 @@ def get_num_lines(filename):
             lines_amount +=1
         return lines_amount
 
-def process(schema_file: str, source_dataset: str, target_dataset:str, chunk_size: int = 1000, threshold: float = 0.5):
+def process(schema_file: str, source_dataset: str, target_dataset:str, chunk_size: int = 1000, threshold: float = 0.5, row_id_start: int = 0):
     first_chunk = True
 
     # Load schema mapping once
@@ -18,11 +18,8 @@ def process(schema_file: str, source_dataset: str, target_dataset:str, chunk_siz
         schema = json.load(f)
 
     lines_amount = get_num_lines(source_dataset)
-    row_id_start = 0
     seen_vins = set()  # To track seen VINs for deduplication
-    for chunk in tqdm(pd.read_csv(source_dataset, chunksize=chunk_size),
-                      total=lines_amount // chunk_size + 1,
-                      desc=f"Processing {source_dataset}"):
+    for chunk in tqdm(pd.read_csv(source_dataset, chunksize=chunk_size), total=lines_amount // chunk_size + 1, desc=f"Processing {source_dataset}"):
         chunk = chunk[[c for c in chunk.columns if c in schema.keys()]]
         chunk = chunk.rename(columns=schema)
         # Replace empty strings and whitespace with NaN
@@ -33,14 +30,15 @@ def process(schema_file: str, source_dataset: str, target_dataset:str, chunk_siz
         chunk["row_id"] = chunk.index + row_id_start
         row_id_start += len(chunk)
         # Deduplicate based on VIN
-        if "VIN" in chunk.columns:
-            chunk = chunk[~chunk["VIN"].isin(seen_vins)]
-            seen_vins.update(chunk["VIN"].dropna().unique())
+        if "vin" in chunk.columns:
+            chunk = chunk[~chunk["vin"].isin(seen_vins)]
+            seen_vins.update(chunk["vin"].dropna().unique())
         chunk.to_csv(target_dataset, mode="a", index=False, header=first_chunk)
         first_chunk = False
+    return row_id_start
 
 if __name__ == "__main__":
-
-    process("used_cars_to_schema.json", "used_cars_data.csv", "cleaned_used_cars_data.csv",1000, 0.7)
+    row_id_start = 0
+    row_id_start = process("used_cars_to_schema.json", "used_cars_data.csv", "a_used_cars_data.csv",1000, 0.7, row_id_start)
     
-    process("vehicles_to_schema.json", "vehicles.csv", "cleaned_vehicles.csv", 1000, 0.7)
+    process("vehicles_to_schema.json", "vehicles.csv", "a_vehicles.csv", 1000, 0.7, row_id_start)
