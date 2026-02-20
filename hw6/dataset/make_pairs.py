@@ -8,14 +8,20 @@ import os
 # We will create the pairs to be saved in a CSV with a new column for their match label
 # It will be balanced, using all the positives matches in the match_table and getting the same amount of random negative matches by randomly picking and checking that it's not present in the match_table
 
-def match_chunk(chunk_used_cars, chunk_vehicles):
-    merged = pd.merge(chunk_used_cars, chunk_vehicles, on="VIN", how="inner", suffixes=('_used_cars', '_vehicles'))
+def match_chunk(chunk_a, chunk_b):
+    merged = pd.merge(chunk_a, chunk_b, on="VIN", how="inner", suffixes=('_used_cars', '_vehicles'))
     if not merged.empty:
         merged["match_label"] = 1
+        # Create explicit columns for both VINs to match negative pair schema
+        merged["VIN_used_cars"] = merged["VIN"]
+        merged["VIN_vehicles"] = merged["VIN"]
+        # Drop the common key if you want strictly suffixed columns, or keep it. 
+        # Usually better to drop to avoid ambiguity if downstream expects specific names.
+        merged = merged.drop(columns=["VIN"])
     return merged
 
 
-def create_negative_pairs(match_table, dataset1_path, dataset2_path, num_pairs):
+def create_negative_pairs(dataset1_path, dataset2_path, num_pairs):
     # Get total lines to know range for random sampling
     # Subtract 1 for header
     n_rows1 = sum(1 for _ in open(dataset1_path)) - 1
@@ -48,16 +54,14 @@ def create_negative_pairs(match_table, dataset1_path, dataset2_path, num_pairs):
     df1 = df1.sample(frac=1).reset_index(drop=True)
     df2 = df2.sample(frac=1).reset_index(drop=True)
     
-    df1_renamed = df1.rename(columns={c: f"{c}_used_cars" for c in df1.columns if c != "VIN"})
-    
-    df2_renamed = df2.rename(columns={c: f"{c}_vehicles" for c in df2.columns if c != "VIN"})
-    df2_renamed = df2_renamed.rename(columns={"VIN": "VIN_right"})
+    # Rename ALL columns including VIN
+    df1_renamed = df1.rename(columns={c: f"{c}_used_cars" for c in df1.columns})
+    df2_renamed = df2.rename(columns={c: f"{c}_vehicles" for c in df2.columns})
 
     candidates = pd.concat([df1_renamed, df2_renamed], axis=1)
 
-    candidates = candidates[candidates['VIN'] != candidates['VIN_right']]
-
-    candidates = candidates.drop(columns=['VIN_right'])
+    # Filter out accidental positive matches (same VIN)
+    candidates = candidates[candidates['VIN_used_cars'] != candidates['VIN_vehicles']]
 
     candidates['match_label'] = 0
 
@@ -84,7 +88,7 @@ if __name__ == "__main__":
             if not positive_pairs.empty:
                 positive_pairs.to_csv(args.output, mode='a', index=False, header=not os.path.exists(args.output))
     
-    negative_pairs = create_negative_pairs(match_table, args.dataset1, args.dataset2, positive_pairs_amount)
+    negative_pairs = create_negative_pairs(args.dataset1, args.dataset2, positive_pairs_amount)
     # append negative pairs to the same output file
     pd.DataFrame(negative_pairs).to_csv(args.output, mode='a', index=False, header=not os.path.exists(args.output))
 

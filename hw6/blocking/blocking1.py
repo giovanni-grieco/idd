@@ -1,8 +1,3 @@
-# This file will contain a strategy by reading from both datasets and adding a block_id column.
-# Don't know yet if we'll keep them separated or merge them into a single dataset with a block_id column.
-# Both dataset have indipendent row_id, so a simple merge won't work, we need to keep track of the original row_id
-
-
 from collections import defaultdict
 import jellyfish
 import argparse
@@ -12,9 +7,22 @@ import hashlib
 import logging
 
 WORKING_DIR = "blocks1"
+COLUMN_NAMES = []
+SUFFIXES = []
 
+def init():
+    with open("schema.txt", "r") as f:
+        with open("suffixes.txt", "r") as suffix_file:
+            for line in f:
+                column_name = line.strip()
+                COLUMN_NAMES.append(column_name)
+            for line in suffix_file:
+                suffix = line.strip()
+                SUFFIXES.append(suffix)
 
-def get_typo_tolerant_keys(row) -> int:
+            
+
+def get_typo_tolerant_keys(row) -> str:
     brand = str(row.get('Marca', '')).lower().strip()
     model = str(row.get('Modello', '')).lower().strip()
     brand_key = jellyfish.soundex(brand)
@@ -23,18 +31,23 @@ def get_typo_tolerant_keys(row) -> int:
     key_hash = hashlib.md5(key_string.encode()).hexdigest()
     return key_hash
 
-def handle_row(working_dir, row, blocks: set):
-    key = get_typo_tolerant_keys(row._asdict())
-    block_file = os.path.join(working_dir, f"{key}")
-    if key not in blocks:
-        blocks.add(key)
-    with open(block_file, 'a') as f:
-        f.write(f"{row.row_id}\n")
 
+def handle_row(row):
+    # A row contains a pair now so we need to calculate the hash for both used_cars and vehicles and if they match
+    # They survive, if they don't, we drop them.
+    first_row = pd.Series({col: getattr(row, f"{col}_used_cars") for col in COLUMN_NAMES})
+    second_row = pd.Series({col: getattr(row, f"{col}_vehicles") for col in COLUMN_NAMES})
+    first_key = get_typo_tolerant_keys(first_row)
+    second_key = get_typo_tolerant_keys(second_row)
+    if first_key == second_key:
+        return row
+    return None
 
-if __name__ == "__main__":
+def main():
+    init()
     parser = argparse.ArgumentParser(description="Create blocks based on typo-tolerant keys.")
     parser.add_argument("table1", help="Path to the first aligned CSV file (e.g., aligned_used_cars_data.csv)")
+    parser.add_argument("-o", "--output", help="Path to the output csv file", default="blocked_pairs.csv")
     args = parser.parse_args()
 
     os.makedirs(WORKING_DIR, exist_ok=True)
@@ -43,10 +56,14 @@ if __name__ == "__main__":
     working_dir = os.path.join(WORKING_DIR, table1_name)
     os.makedirs(working_dir, exist_ok=True)
 
-    blocks = set()
-
-
     # Process first table
     for chunk in pd.read_csv(args.table1, chunksize=100000):
         for row in chunk.itertuples(index=False):
-            handle_row(working_dir, row, blocks)
+            row = handle_row(row)
+            if row:
+                output_path = os.path.join(working_dir, f"{row.block_id}.csv")
+                row.to_frame().T.to_csv(output_path, mode='a', index=False, header=not os.path.exists(output_path))
+
+if __name__ == "__main__":
+    main()
+

@@ -7,6 +7,7 @@
     "odometer": "Chilometraggio",
     "transmission": "Cambio",
     "fuel": "Tipo carburante",
+    "type": "Tipo veicolo",
     "paint_color": "Colore esterno",
     "description": "Descrizione",
     "cylinders": "Cilindri",
