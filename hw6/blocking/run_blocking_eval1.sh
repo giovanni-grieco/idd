@@ -1,1 +1,0 @@
-python3 blocking_evaluator.py -b blocked1_shuffled_pairs.csv -e excluded1_shuffled_pairs.csv > blocking_eval1.txt

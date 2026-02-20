@@ -18,7 +18,7 @@ def match_chunk(chunk_a, chunk_b):
         merged["match_label"] = 1
         # Create explicit columns for both VINs to match negative pair schema later
         merged["vin_used_cars"] = merged["vin"]
-        merged["vin_vehicles"] = merged["VIN"]
+        merged["vin_vehicles"] = merged["vin"]
 
         # Drop the common key because we now have specific suffixed keys
         merged = merged.drop(columns=["vin"])

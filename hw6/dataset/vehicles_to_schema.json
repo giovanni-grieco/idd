@@ -1,7 +1,7 @@
 {
     "VIN": "vin",
     "manufacturer": "manufacturer",
-    "model": "modello",
+    "model": "model",
     "year": "year",
     "price": "price",
     "odometer": "mileage",
