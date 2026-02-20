@@ -21,8 +21,8 @@ def init():
 
 
 def get_typo_tolerant_keys(row) -> str:
-    brand = str(row.get('Marca', '')).lower().strip()
-    model = str(row.get('Modello', '')).lower().strip()
+    brand = str(row.get('manufacturer', '')).lower().strip()
+    model = str(row.get('model', '')).lower().strip()
     brand_key = jellyfish.soundex(brand)
     model_key = jellyfish.soundex(model)
     key_string = f"{brand_key}_{model_key}"

@@ -12,16 +12,16 @@ def match_chunk(chunk_a, chunk_b):
     chunk_b = chunk_b.reset_index(drop=True)
 
     # Merge on VIN to find positive matches (assuming VIN is the join key)
-    merged = pd.merge(chunk_a, chunk_b, on="VIN", how="inner", suffixes=('_used_cars', '_vehicles'))
+    merged = pd.merge(chunk_a, chunk_b, on="vin", how="inner", suffixes=('_used_cars', '_vehicles'))
 
     if not merged.empty:
         merged["match_label"] = 1
         # Create explicit columns for both VINs to match negative pair schema later
-        merged["VIN_used_cars"] = merged["VIN"]
-        merged["VIN_vehicles"] = merged["VIN"]
+        merged["vin_used_cars"] = merged["vin"]
+        merged["vin_vehicles"] = merged["VIN"]
 
         # Drop the common key because we now have specific suffixed keys
-        merged = merged.drop(columns=["VIN"])
+        merged = merged.drop(columns=["vin"])
     return merged
 
 
@@ -59,7 +59,7 @@ def create_negative_pairs(dataset1_path, dataset2_path, num_pairs):
     candidates = pd.concat([df1_renamed, df2_renamed], axis=1)
 
     # Filter out accidental positive matches (same VIN)
-    candidates = candidates[candidates['VIN_used_cars'] != candidates['VIN_vehicles']]
+    candidates = candidates[candidates['vin_used_cars'] != candidates['vin_vehicles']]
 
     candidates['match_label'] = 0
 

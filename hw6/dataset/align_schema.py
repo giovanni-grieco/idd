@@ -30,9 +30,9 @@ def process(schema_file: str, source_dataset: str, target_dataset:str, chunk_siz
         chunk["row_id"] = chunk.index + row_id_start
         row_id_start += len(chunk)
         # Deduplicate based on VIN
-        if "VIN" in chunk.columns:
-            chunk = chunk[~chunk["VIN"].isin(seen_vins)]
-            seen_vins.update(chunk["VIN"].dropna().unique())
+        if "vin" in chunk.columns:
+            chunk = chunk[~chunk["vin"].isin(seen_vins)]
+            seen_vins.update(chunk["vin"].dropna().unique())
         chunk.to_csv(target_dataset, mode="a", index=False, header=first_chunk)
         first_chunk = False
     return row_id_start

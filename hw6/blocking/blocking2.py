@@ -23,9 +23,9 @@ def init():
 def get_typo_tolerant_keys(row) -> set:
     keys = set()
 
-    brand = str(row.get('Marca', '')).lower().strip()
-    model = str(row.get('Modello', '')).lower().strip()
-    year = str(row.get('Anno', '')).strip()
+    brand = str(row.get('manufacturer', '')).lower().strip()
+    model = str(row.get('model', '')).lower().strip()
+    year = str(row.get('year', '')).strip()
 
     # 1. Brand+Model soundex
     if brand and model:
