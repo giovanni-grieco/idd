@@ -2,3 +2,6 @@ pandas
 tqdm
 jellyfish
 numpy
+dedupe
+recordlinkage
+unidecode

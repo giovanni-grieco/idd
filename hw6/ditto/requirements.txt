@@ -19,3 +19,4 @@ wordfreq
 setuptools
 wheel
 spacy
+apex
