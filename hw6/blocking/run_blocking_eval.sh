@@ -1,2 +1,2 @@
-python3 blocking_evaluator.py -b blocked1_shuffled_pairs.csv -e excluded1_shuffled_pairs.csv > blocking_eval1.txt
-python3 blocking_evaluator.py -b blocked2_shuffled_pairs.csv -e excluded2_shuffled_pairs.csv > blocking_eval2.txt
+python3 blocking_evaluator.py -b ../dataset/blocked1_shuffled_pairs.csv -e ../dataset/excluded1_shuffled_pairs.csv > blocking_eval1.txt
+python3 blocking_evaluator.py -b ../dataset/blocked2_shuffled_pairs.csv -e ../dataset/excluded2_shuffled_pairs.csv > blocking_eval2.txt

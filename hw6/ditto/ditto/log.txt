@@ -10,3 +10,7 @@ used_cars_vehicles_lm=roberta_dk=False_su=False 20.623480
 used_cars_vehicles_lm=roberta_dk=False_su=False 10.039554
 used_cars_vehicles_lm=roberta_dk=False_su=False 16.371309
 used_cars_vehicles_lm=roberta_dk=False_su=False 10.198924
+used_cars_vehicles_lm=roberta_dk=False_su=False 16.394462
+used_cars_vehicles_lm=roberta_dk=False_su=False 31.759268
+used_cars_vehicles_lm=roberta_dk=False_su=False 16.495872
+used_cars_vehicles_lm=roberta_dk=False_su=False 41.461997

@@ -49,7 +49,7 @@ def readData(filename):
         reader = csv.DictReader(f)
         for row in reader:
             clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
-            row_id = f"{row["row_id_used_cars"]}_{row["row_id_vehicles"]}"
+            row_id = int(row["Id"])
             data_d[row_id] = dict(clean_row)
 
     return data_d
@@ -82,10 +82,10 @@ if __name__ == "__main__":
 
     # ## Setup
 
-    input_file = "dropped_train.csv"
-    output_file = "output.csv"
-    settings_file = "learned_settings"
-    training_file = "training.json"
+    input_file = "csv_example_messy_input.csv"
+    output_file = "csv_example_output.csv"
+    settings_file = "csv_example_learned_settings"
+    training_file = "csv_example_training.json"
 
     print("importing data ...")
     data_d = readData(input_file)
@@ -100,8 +100,8 @@ if __name__ == "__main__":
 
         # Define the fields dedupe will pay attention to
         fields = [
-            dedupe.variables.String("model"),
-            dedupe.variables.String("manufacturer"),
+            dedupe.variables.String("Site name"),
+            dedupe.variables.String("Address"),
             dedupe.variables.Exact("Zip", has_missing=True),
             dedupe.variables.String("Phone", has_missing=True),
         ]
