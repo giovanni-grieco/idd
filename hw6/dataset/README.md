@@ -1,7 +1,9 @@
-# Dataset
+# Analysis
 
-In questa cartella abbiamo i vari script di manipolazione del dataset
+# Preprocessing
 
-## Preprocessing
+# Record Linkage
 
-Il pre-processing 
+## Python Record Linkage Library
+## Python Dedupe Library
+## Ditto Verison
